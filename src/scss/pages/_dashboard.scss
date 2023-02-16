@@ -1,0 +1,91 @@
+#Dashboard {
+    padding: 30px;
+   
+
+    .dashboard_content {
+        display: flex;
+        width: 80vw;
+        height: 100%;
+        margin: 0 auto;
+
+        .dashboard_menu {
+            min-width: 15%;
+
+            .menu_hearder {
+
+                p {
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    padding: 0;
+                    margin: 15px 0;
+                    text-align: center;
+                }
+            }
+
+            .menu_content {
+                .menu_item {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 15px;
+                    width: 100%;
+                    cursor: pointer;
+                    transition: 0.5s;
+
+                    i {
+                        transition: 0.5s;
+                    }
+
+                    p {
+                        margin: 0;
+                    }
+
+                    &:hover {
+                        background-color: rgba(0, 0, 0, 0.479);
+
+                        i {
+                            transform: translateX(-20px);
+                        }
+                    }
+                }
+            }
+        }
+
+        .dashboard_views {
+            width: 100%;
+
+            .dashboard_views_hearder {
+                width: 100%;
+                padding: 0 20px 0 20px;
+
+
+                .views_hearder_item {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .hearder_left {}
+
+                    .hearder_right {
+                        a {
+                            text-decoration: none;
+                            color: white;
+                            font-weight: bold;
+                            transition: 0.5s;
+                        }
+
+                        &:hover {
+                            a {
+                                color: $cl_dark_100;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            .views_items {
+                padding: 0 20px;
+            }
+        }
+    }
+}

@@ -1,0 +1,94 @@
+#footer {
+
+    .footer_main {
+        padding: 20px 0;
+
+        .footer_main_content {
+            .footer_main_items {
+                padding: 10px;
+
+                .logo {
+                    h1 {
+                        line-height: 48px;
+                    }
+                }
+
+                .hearder_hag {
+                    h1 {
+                        font-family: montserrat_Bold;
+                        font-size: 30px;
+
+                        &:hover {
+                            &::after {
+                                width: 100%;
+                                background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
+                            }
+                        }
+
+                        &::after {
+                            content: "";
+                            display: block;
+                            width: 70%;
+                            height: 3px;
+                            background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
+                            transition: 0.5s;
+                        }
+                    }
+                }
+
+
+                ul {
+                    list-style: none;
+
+                    li {
+                        margin: 10px 0;
+
+                        &:hover {
+                            a {
+                                color: rgb(138, 138, 138);
+
+                                i {
+                                    margin-right: 20px;
+                                    color: rgb(2, 85, 31);
+                                }
+                            }
+                        }
+
+                        a {
+                            text-decoration: none;
+                            color: rgb(36, 36, 36);
+                            transition: 0.5s;
+
+                            i {
+                                font-size: 1rem;
+                                width: 30px;
+                                height: 30px;
+                                color: rgb(1, 44, 16);
+                                border: 1px solid rgb(2, 85, 31);
+                                border-radius: 50%;
+                                text-align: center;
+                                line-height: 30px;
+                                margin-right: 10px;
+                                transition: 0.5s;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .footer_bot {
+        background-color: rgb(26, 26, 26);
+        padding: 12px;
+
+        p {
+            font-weight: 400;
+            font-style: italic;
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: rgb(194, 194, 194);
+            text-align: center;
+        }
+    }
+}
