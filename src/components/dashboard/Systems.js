@@ -18,36 +18,38 @@ function DashboardSystems(props) {
         ArcElement
     );
 
-    Chart.defaults.color = 'white';
+    Chart.defaults.color = 'black';
 
     const options = {
         responsive: true,
         plugins: {
             legend: {
-                position: 'bottom',
+                position: 'bottom',               
             },
             title: {
                 display: true,
-                text: "Thống Kê Năm 2023",
+                text: "Thống Kê Năm 2023",              
                 font: {
                     size: 30,
                 },
             },
+
         },
     };
 
     const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
 
     const data = {
-        labels,
+        labels,       
         datasets: [
             {
                 label: 'Change Cards',
                 data: [65, 59, 80, 81, 56, 55, 100],
+                color:"black",
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
             },
             {
-                label: 'Buy Cards',
+                label: 'Buy Cards',              
                 data: [15, 27, 33, 90, 66, 50, 80],
                 backgroundColor: 'rgba(53, 162, 235, 0.5)',
             },
@@ -55,11 +57,11 @@ function DashboardSystems(props) {
     };
 
     const data2 = {
-        labels: ['Change Cards', 'Buy Cards'],
+        labels: ['Change Cards', 'Buy Cards'],     
         datasets: [
             {
                 label: '# of Votes',
-                data: [500, 102],
+                data: [500, 102],               
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -80,15 +82,12 @@ function DashboardSystems(props) {
             },
         ]
     };
-
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    console.log(month)
-    return (
+  
+     return (
         <div id='dashboard_system'>
             <div className='system_content'>
 
-                <div className='sytem_maintance layout_wrapter'>
+                <div className='sytem_maintance bgr_white mt-2'>
                     <div className='hearder_hag'>
                         <h1>Bảo Trì Website</h1>
                     </div>
@@ -100,7 +99,7 @@ function DashboardSystems(props) {
                         label={activeMaintance ? "Active" : "Disable"}
                     />
                 </div>
-                <div className='system_theme layout_wrapter'>
+                <div className='system_theme bgr_white mt-2'>
                     <div className='hearder_hag'>
                         <h1>Themes</h1>
                     </div>
@@ -123,7 +122,7 @@ function DashboardSystems(props) {
 
 
                 </div>
-                <div className='system_chart layout_wrapter'>
+                <div className='system_chart bgr_white mt-2'>
                     <div className='hearder_hag'>
                         <h1>Thống Kê</h1>
                     </div>

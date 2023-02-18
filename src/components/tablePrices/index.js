@@ -44,7 +44,7 @@ function TablePrices(props) {
     return (
         <div className='table_prices bgr_white mt-3'>
             <div className='hearder_hag'>
-                <h1>Bảng Phí Đổi Thẻ Ngày: {handleRenderToday()}</h1>
+                <h1>Bảng Phí Đổi Thẻ Ngày: <span className='text-danger'>{handleRenderToday()}</span></h1>
             </div>
             <div className='price_content'>
                 <div className='prices_hearder'>

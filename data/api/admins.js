@@ -1,14 +1,14 @@
-const { toast } = require("react-toastify");
-const { rootApi } = require("./configApi");
+import { toast } from "react-toastify"
+import { rootApi } from "./configApi"
 
-const ApiAdmin = {
+export const ApiAdmins = {
     Cards: {
         Add: async () => {
             await rootApi({
                 method: "POST",
                 url: "/admin/prices/update"
             }).then((res) => {
-                toast.success("Update success")
+                toast.success(res.data.mess)
             }).catch((err) => {
                 if (err.response) {
                     toast.error(err.response.data.error);
@@ -22,7 +22,7 @@ const ApiAdmin = {
                 method: "DELETE",
                 url: `/admin/cards/${idCard}`
             }).then((res) => {
-                toast.success("Update success");
+                toast.success(res.data.mess);
             }).catch((err) => {
                 if (err.response) {
                     toast.error(err.response.data.error);
@@ -41,7 +41,7 @@ const ApiAdmin = {
                 url: `/admin/cards/${idCard}`,
                 data: formData
             }).then((res) => {
-                toast.success("Update success")
+                toast.success(res.data.mess)
             }).catch((err) => {
                 if (err.response) {
                     toast.error(err.response.data.error);
@@ -59,7 +59,7 @@ const ApiAdmin = {
                 method: "PUT",
                 url: "/admin/prices/update"
             }).then((res) => {
-                toast.success("Update success")
+                toast.success(res.data.mess)
             }).catch((err) => {
                 if (err.response) {
                     toast.error(err.response.data.error);
@@ -182,9 +182,54 @@ const ApiAdmin = {
             await rootApi({
                 method: "GET",
                 url: "/admin/data",
+            }).then((res) => {              
+                dispatch(LoadingDataAdmin(res.data))
+            }).catch((err) => {
+                if (err.response) {
+                    toast.error(err.response.data.error);
+                } else {
+                    toast.error(err);
+                }
+            })
+        }
+    },
+    Banks: {
+        Add: async (name, sign) => {
+            await rootApi({
+                method: "POST",
+                url: "/admin/banks",
+                data: { name, sign }
             }).then((res) => {
                 toast.success(res.data.mess);
-                dispatch(LoadingDataAdmin(res.data))
+            }).catch((err) => {
+                if (err.response) {
+                    toast.error(err.response.data.error);
+                } else {
+                    toast.error(err);
+                }
+            })
+        },
+        Edit: async (name, sign, id) => {
+            await rootApi({
+                method: "PUT",
+                url: `/admin/banks/${id}`,
+                data: { name, sign }
+            }).then((res) => {
+                toast.success(res.data.mess);
+            }).catch((err) => {
+                if (err.response) {
+                    toast.error(err.response.data.error);
+                } else {
+                    toast.error(err);
+                }
+            })
+        },
+        Delete: async (id) => {
+            await rootApi({
+                method: "DELETE",
+                url: `/admin/banks/${id}`,
+            }).then((res) => {
+                toast.success(res.data.mess);
             }).catch((err) => {
                 if (err.response) {
                     toast.error(err.response.data.error);
@@ -196,6 +241,3 @@ const ApiAdmin = {
     }
 };
 
-module.exports = {
-    ApiAdmin
-}

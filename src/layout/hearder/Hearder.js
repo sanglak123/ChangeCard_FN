@@ -1,12 +1,13 @@
 import { formatMoney } from '@/config/formatMoney';
 import { UserSelector } from '@/redux/selector/UserSelector';
 import { LogoutUserSuccess } from '@/redux/slice/UserSlice';
-import { ApiClients } from 'data/callApi/ApiClients';
+import { ApiUsers } from 'data/api/users';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Button, Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import News from '../news';
 
 function Hearder(props) {
     const dispatch = useDispatch();
@@ -16,10 +17,9 @@ function Hearder(props) {
     const User = useSelector(UserSelector.User);
     const AccessToken = useSelector(UserSelector.AccessToken)
     const Store = useSelector(UserSelector.Store);
-    console.log(route)
 
     const handleLogout = async () => {
-        await ApiClients.Authen.Logout(dispatch, LogoutUserSuccess);
+        await ApiUsers.Authen.Logout(dispatch, LogoutUserSuccess, router);
     }
 
     return (
@@ -52,7 +52,7 @@ function Hearder(props) {
                                                 <Nav.Link disabled className='nav_surlpus'><i className="fa fa-user"></i></Nav.Link>
 
                                                 <NavDropdown title={User.displayName ? User?.displayName : User?.userName} id="basic-nav-dropdown">
-                                                    <NavDropdown.Item href={`/profile/${User?.userName}`}><i className="fa fa-user-cog me-2"></i>Thông tin tài khoản</NavDropdown.Item>
+                                                    <NavDropdown.Item href={`/${User?.userName}/profile`}><i className="fa fa-user-cog me-2"></i>Thông tin tài khoản</NavDropdown.Item>
 
                                                     <NavDropdown.Item href={`/${User?.userName}/payment`}><i className="fa fa-donate me-2"></i>Quỹ số dư</NavDropdown.Item>
                                                     <NavDropdown.Item href={`/${User?.userName}/payment`}><i className="fa fa-dollar-sign me-2"></i>Nạp tiền</NavDropdown.Item>
@@ -82,6 +82,7 @@ function Hearder(props) {
                     </Navbar>
                 </div>
             </div>
+            <News />
             {
                 Store?.length > 0 && AccessToken &&
                 <div id='store_user'>
@@ -89,9 +90,9 @@ function Hearder(props) {
                         <i className="fa fa-shopping-cart"></i>
                         <span className='noti'>{Store.length}</span>
                     </div>
-                    <div className='store_item'>
-                        <p className='m-0 p-0'>Giỏ hàng</p>
-                        <p className='text-danger'>{Store.length} sản phẩm</p>
+                    <div className='store_item bgr_white'>
+                        <p className='m-0 p-0 txt_bold'>Giỏ hàng</p>
+                        <p className='text-danger'><span className='txt_bold'>{Store.length}</span> sản phẩm</p>
                         <Link className='btn btn-success' href={`/${User.userName}/store`}>Thanh toán ngay</Link>
                     </div>
                 </div>

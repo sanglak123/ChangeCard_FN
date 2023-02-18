@@ -4,6 +4,7 @@ const UserSlice = createSlice({
     name: "client",
     initialState: {
         User: [],
+        BankOfUsers: [],
         Store: []
     },
     reducers: {
@@ -52,13 +53,11 @@ const UserSlice = createSlice({
         BuyCardSuccess: (state, actions) => {
             state.Store = [];
         },
-        //History Change card
-        HistoryChangeCardSuccess: (state, actions) => {
-            state.HistoryChangeCards = actions.payload
-        },
-        HistoryBuyCardSuccess: (state, actions) => {
-            state.HistoryBuyCards = actions.payload
+        //Bank
+        LoadingDataUserSuccess: (state, actions) => {
+            state.BankOfUsers = actions.payload.BankOfUsers
         }
+
     }
 });
 export const {
@@ -73,10 +72,8 @@ export const {
     DeleteCardSuccess,
     ClearAllStoreSuccess,
     BuyCardSuccess,
-
-    //History Change Card
-    HistoryChangeCardSuccess,
-    HistoryBuyCardSuccess
+    //BankOfUser
+    LoadingDataUserSuccess
 } = UserSlice.actions;
 
 export default UserSlice;

@@ -1,6 +1,7 @@
 #hearder {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
+
     a {
         color: $cl_green_100;
         font-weight: 700;
@@ -50,10 +51,10 @@
 
 #store_user {
     position: fixed;
-    top: 10%;
+    top: 15%;
     right: 0;
     transform: translateX(65%);
-    transition: 0.5s;
+    transition: 0.5s; 
 
     &:hover {
         transform: translateX(0%);
@@ -72,10 +73,13 @@
         transition: 0.5s;
         width: 40px;
         height: 40px;
-        background-color: rgba(0, 0, 0, 0.377);
+        background-color: $cl_green_100;
         text-align: center;
         line-height: 40px;
         position: relative;
+        i{
+            color: white;
+        }
 
         .noti {
             font-size: 10px;
@@ -86,6 +90,7 @@
             position: absolute;
             top: -29%;
             left: 26px;
+            color: white;
             background-color: red;
         }
     }

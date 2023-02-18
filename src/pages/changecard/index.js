@@ -1,11 +1,18 @@
+import UserChangeCard from '@/components/changeCard/ChangeCard';
+import TablePrices from '@/components/tablePrices';
 import React from 'react';
+import { Container } from 'react-bootstrap';
 
-function index(props) {
+function ChangeCardsPage(props) {
     return (
-        <div>
-            ChangeCard
+        <div id='change_cards'>
+            <Container>
+                <UserChangeCard />
+                <TablePrices />
+            </Container>
+
         </div>
     );
 }
 
-export default index;
+export default ChangeCardsPage;

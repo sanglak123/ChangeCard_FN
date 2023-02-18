@@ -1,14 +1,14 @@
-import { AdminSelector } from '@/redux/selector/AdminSelector';
+import { formatMoney } from '@/config/formatMoney';
+import { UserSelector } from '@/redux/selector/UserSelector';
 import { EditProfileSuccess } from '@/redux/slice/AdminSlice';
-import { ApiAdmin } from 'data/callApi/ApiAdmin';
+import { ApiAdmins } from 'data/api/admins';
 import React, { useState } from 'react';
 import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 function DashboardProfile(props) {
-    const Admin = useSelector(AdminSelector.Admin);
+    const Admin = useSelector(UserSelector.User);
     const dispatch = useDispatch();
-    console.log(Admin)
 
     //Edit  
     const [photo, setPhoto] = useState("");
@@ -31,12 +31,12 @@ function DashboardProfile(props) {
 
     //Edit
     const handleEditProfile = async () => {
-        await ApiAdmin.Authen.EditProfile(Admin?.id, displayName, fullName, phone, adress, photo, email, dispatch, EditProfileSuccess);
+        await ApiAdmins.Authen.EditProfile(Admin?.id, displayName, fullName, phone, adress, photo, email, dispatch, EditProfileSuccess);
         setEdit(false);
     }
     return (
         <div id='profile'>
-            <div className='profile_content layout_wrapter'>
+            <div className='profile_content bgr_white'>
 
                 <div className='profile_avatr'>
                     <div className='hearder_hag'>
@@ -67,7 +67,7 @@ function DashboardProfile(props) {
                                 <img src={Admin?.Img?.path} alt={Admin?.userName} className='img-fluid' />
                             </div>
                     }
-
+                    <p>Account : <span className='text-danger txt_bold'>{Admin?.admin === true ? "Admin" : "Client"}</span></p>
                     <p>User : <span className='text-danger txt_bold'>{Admin?.userName}</span></p>
                 </div>
                 <div className='Profile_setting'>
@@ -76,10 +76,32 @@ function DashboardProfile(props) {
                     </div>
                     <div className='profile_content'>
                         <div className='profile_item'>
-                            <Row>
+                            <Row>                              
                                 <Col xs={6}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Display Name :</Form.Label>
+                                        <Form.Label>Ví Điện Tử</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Your displayname"
+                                            value={formatMoney(Admin?.surplus)}
+                                            disabled
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col xs={6}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Số Dư Khả Dụng</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Your displayname"
+                                            value={formatMoney(Admin?.surplus)}
+                                            disabled
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col xs={6}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Tên Hiển Thị</Form.Label>
                                         {
                                             edit ?
                                                 <Form.Control
@@ -87,18 +109,25 @@ function DashboardProfile(props) {
                                                     placeholder="Your displayname"
                                                     value={displayName}
                                                     onChange={(e) => setDisplayName(e.target.value)}
-                                                    className='txt_bold txt_black'
+                                                    autoFocus
                                                 />
                                                 :
-                                                <p>{Admin?.displayName ? Admin?.displayName : "Null"}</p>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Your displayname"
+                                                    value={Admin?.displayName ? Admin?.displayName : "Null"}
+                                                    readOnly
+                                                />
+
 
                                         }
 
                                     </Form.Group>
                                 </Col>
+
                                 <Col xs={6}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Full Name</Form.Label>
+                                        <Form.Label>Tên Đầy Đủ</Form.Label>
                                         {
                                             edit ?
                                                 <Form.Control
@@ -106,18 +135,24 @@ function DashboardProfile(props) {
                                                     placeholder="Your full name"
                                                     value={fullName}
                                                     onChange={(e) => setFullName(e.target.value)}
-                                                    className='txt_bold txt_black'
                                                 />
 
                                                 :
-                                                <p>{Admin?.fullName ? Admin?.fullName : "Null"}</p>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Your full name"
+                                                    value={Admin?.fullName ? Admin?.fullName : "Null"}
+                                                    readOnly
+                                                />
+
                                         }
                                     </Form.Group>
 
                                 </Col>
+
                                 <Col xs={6}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Your Email</Form.Label>
+                                        <Form.Label>Địa Chỉ Email</Form.Label>
                                         {
                                             edit ?
                                                 <Form.Control
@@ -127,14 +162,21 @@ function DashboardProfile(props) {
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />
                                                 :
-                                                <p>{Admin?.email ? Admin?.email : "Null"}</p>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Your email"
+                                                    value={Admin?.email ? Admin?.email : "Null"}
+                                                    readOnly
+                                                />
+
                                         }
 
                                     </Form.Group>
                                 </Col>
+
                                 <Col xs={6}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Mobile number</Form.Label>
+                                        <Form.Label>Số ĐIện Thoại</Form.Label>
                                         {
                                             edit ?
                                                 <Form.Control
@@ -144,14 +186,21 @@ function DashboardProfile(props) {
                                                     onChange={(e) => setPhone(e.target.value)}
                                                 />
                                                 :
-                                                <p>{Admin?.phone ? Admin?.phone : "Null"}</p>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Your email"
+                                                    value={Admin?.phone ? Admin?.phone : "Null"}
+                                                    readOnly
+                                                />
+
                                         }
 
                                     </Form.Group>
                                 </Col>
+
                                 <Col xs={12}>
                                     <Form.Group className="mb-3">
-                                        <Form.Label>Adress</Form.Label>
+                                        <Form.Label>Địa Chỉ</Form.Label>
                                         {
                                             edit ?
                                                 <Form.Control
@@ -161,7 +210,13 @@ function DashboardProfile(props) {
                                                     onChange={(e) => setAdress(e.target.value)}
                                                 />
                                                 :
-                                                <p>{Admin?.adress ? Admin?.adress : "Null"}</p>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Your adress"
+                                                    value={Admin?.adress ? Admin?.adress : "Null"}
+                                                    readOnly
+                                                />
+
                                         }
 
                                     </Form.Group>

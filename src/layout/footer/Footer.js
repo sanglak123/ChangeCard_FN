@@ -13,7 +13,7 @@ function Footer(props) {
         pathname !== "/login" && pathname !== "/admin/dashboard" &&
         <div id='footer' className={router.pathname === "/login" ? "hide" : ""}>
             <div className='footer_content'>
-                <div className='footer_main bgr_white mt-3'>
+                <div className='footer_main mt-3'>
                     <Container>
                         <div className='footer_main_content'>
                             <Row>

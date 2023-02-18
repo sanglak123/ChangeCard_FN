@@ -1,8 +1,8 @@
 import { formatMoney } from '@/config/formatMoney';
 import { DataSelector } from '@/redux/selector/DataSelector';
 import { LoadingDataSuccess } from '@/redux/slice/DataSlice';
-import { ApiAdmin } from 'data/callApi/ApiAdmin';
-import { ApiClients } from 'data/callApi/ApiClients';
+import { ApiAdmins } from 'data/api/admins';
+import { ApiUsers } from 'data/api/users';
 import React, { useEffect, useState } from 'react';
 import { Button, Form, InputGroup, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,8 +23,8 @@ function TableCardsRender({ telco }) {
     const [feesBuy, setFeesBuy] = useState("");
 
     const handleEditFeesBuy = async (id) => {
-        await ApiAdmin.Prices.EditFeesBuy(id, feesBuy);
-        await ApiClients.Data.LoadingData(dispatch, LoadingDataSuccess)
+        await ApiAdmins.Prices.EditFeesBuy(id, feesBuy);
+        await ApiUsers.Data.LoadingData(dispatch, LoadingDataSuccess)
         setEdit("")
     }
 
@@ -33,11 +33,11 @@ function TableCardsRender({ telco }) {
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th className='txt_white'>{telco}</th>
+                        <th>{telco}</th>
                         {
                             PriceRender?.map((price, index) => {
                                 return (
-                                    <th key={index} className='txt_white txt_center'>{formatMoney(price.Value.name)}</th>
+                                    <th key={index} className='txt_center text-danger'>{formatMoney(price.Value.name)}</th>
                                 )
                             })
                         }
@@ -46,11 +46,11 @@ function TableCardsRender({ telco }) {
                 <tbody>
                     {/* //Post */}
                     <tr>
-                        <th className='txt_white'>Post Card</th>
+                        <th className='text-danger'>Post Card</th>
                         {
                             PriceRender?.map((price, index) => {
                                 return (
-                                    <th key={index} className='txt_white txt_center'>{price.feesChange} %</th>
+                                    <th key={index} className='txt_center'>{price.feesChange} %</th>
 
                                 )
                             })
@@ -58,11 +58,11 @@ function TableCardsRender({ telco }) {
                     </tr>
                     {/* //Buy */}
                     <tr>
-                        <th className='txt_white'>Buy Card</th>
+                        <th className='text-success'>Buy Card</th>
                         {
                             PriceRender?.map((price, index) => {
                                 return (
-                                    <th key={index} className='txt_white txt_center'>
+                                    <th key={index} className='txt_center'>
                                         {
                                             edit === `${price.telco}_${price.Value?.name}` ?
                                                 <InputGroup>
@@ -74,7 +74,6 @@ function TableCardsRender({ telco }) {
                                                         placeholder="FeesBuy"
                                                         value={feesBuy}
                                                         onChange={(e) => setFeesBuy(e.target.value)}
-                                                        className="txt_black txt_bold"
                                                         autoFocus
                                                     />
                                                     <Button onClick={() => setEdit("")} variant='danger'><i className="fa fa-times"></i></Button>
@@ -86,7 +85,7 @@ function TableCardsRender({ telco }) {
                                                     <i onClick={() => {
                                                         setEdit(`${price.telco}_${price.Value?.name}`);
                                                         setFeesBuy(price.feesBuy)
-                                                    }} className="fa fa-cog"></i>
+                                                    }} className="fa fa-cog text-success"></i>
                                                 </div>
                                         }
 

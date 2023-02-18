@@ -6,9 +6,12 @@ function ErrorLogin(props) {
     return (
         <div id='error_login'>
             <Container>
-                <div className='bgr_white mt-4 mb-4'>
-                    <h1 className='text-danger'>Bạn chưa đăng nhập!</h1>
-                    <Link href={"/login"}>Đăng nhập hoặc đăng ký</Link>
+                <div className='error_content bgr_white mt-4 mb-4'>
+                    <div className='error_item'>
+                        <h1 className='text-danger'>Bạn chưa đăng nhập!</h1>
+                        <Link href={"/login"}>Đăng nhập hoặc đăng ký</Link>                   
+                    </div>
+
                 </div>
             </Container>
 

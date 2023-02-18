@@ -39,14 +39,14 @@ function DashboardUsers(props) {
     }
 
     return (
-        <div id='users' className='layout_wrapter'>
+        <div id='users' className='bgr_white mt-2'>
             <div className='hearder_hag'>
                 <h1>List Users</h1>
             </div>
             <div className='table_list_users'>
-                <Table bordered size="sm">
+                <Table bordered hover size="sm">
                     <thead>
-                        <tr className='txt_white txt_center'>
+                        <tr className='txt_center'>
                             <th>#</th>
                             <th>DisplayName</th>
                             <th>User</th>
@@ -60,7 +60,7 @@ function DashboardUsers(props) {
                         {
                             userRender?.map((user, index) => {
                                 return (
-                                    <tr key={index} className='txt_white txt_center'>
+                                    <tr key={index} className='txt_center'>
                                         <td>{index + 1}</td>
                                         <td>{user?.displayName}</td>
                                         <td className='txt_bold'>{user?.userName}</td>

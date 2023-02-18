@@ -1,9 +1,9 @@
 import UserChangeCard from '@/components/changeCard/ChangeCard';
 import TablePrices from '@/components/tablePrices';
-import Note from '@/layout/note/Note';
+import CardsHot from '@/layout/cardHot';
 import { DataSelector } from '@/redux/selector/DataSelector';
 import { LoadingDataSuccess } from '@/redux/slice/DataSlice';
-import { ApiClients } from 'data/callApi/ApiClients';
+import { ApiUsers } from 'data/api/users';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
@@ -18,7 +18,7 @@ function ChangeCard(props) {
 
   useEffect(() => {
     const LoadingData = async () => {
-      await ApiClients.Data.LoadingData(dispatch, LoadingDataSuccess)
+      await ApiUsers.Data.LoadingData(dispatch, LoadingDataSuccess)
     };
     LoadingData()
   }, []);
@@ -28,10 +28,10 @@ function ChangeCard(props) {
     <div id='home_page'>
       <Container>
         <div className='home_page_content'>
+          <CardsHot />
           <UserChangeCard />
           {/* //TableChangeCarrd */}
           <TablePrices />
-
 
           <div className='buycard bgr_white mt-3'>
             <div className='buycard_content'>
@@ -39,7 +39,7 @@ function ChangeCard(props) {
                 <h1>Mua Mã Thẻ Nhanh Chóng - Giá Rẻ</h1>
               </div>
               <div className='buycard_note p-3'>
-                <p className='m-0 p-0'>Nếu thẻ bị dạng chờ Xử lý, Quý khách hãy báo ở góc trái màn hình để admin hủy đơn cho bạn thực hiện lại!</p>
+                <p className='m-0 p-0'><i className="fa fa-angle-right me-2"></i>Nếu thẻ bị dạng chờ Xử lý, Quý khách hãy báo ở góc trái màn hình để admin hủy đơn cho bạn thực hiện lại!</p>
               </div>
               <div className='list_cards '>
                 <Row>
@@ -51,18 +51,16 @@ function ChangeCard(props) {
                             <Card.Img variant="top" src={item.Img?.path} />
                             <Card.Body>
                               <Card.Title>
-                                <Link href={`/buy/${item.telco.toLowerCase()}`}>Thẻ {item.telco}</Link>
+                                <Link href={`/buycard/${item.telco.toLowerCase()}`}>Thẻ {item.telco}</Link>
                               </Card.Title>
 
                             </Card.Body>
                           </Card>
                         </Col>
-
                       )
                     })
                   }
                 </Row>
-
               </div>
             </div>
           </div>

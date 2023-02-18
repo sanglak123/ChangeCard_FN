@@ -1,11 +1,9 @@
 import { LoginSuccess } from '@/redux/slice/UserSlice';
-import { ApiClients } from 'data/callApi/ApiClients';
+import { ApiUsers } from 'data/api/users';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
 
 function UserLogin(props) {
     const dispatch = useDispatch();
@@ -23,12 +21,12 @@ function UserLogin(props) {
 
 
     const handleLogin = async () => {
-        await ApiClients.Authen.Login(userName, pass, dispatch, LoginSuccess, router)
+        await ApiUsers.Authen.Login(userName, pass, dispatch, LoginSuccess, router)
     };
 
     const handleRegister = async () => {
         if (userName !== "" && pass !== "") {
-            await ApiClients.Authen.Register(userName, pass, phone, email);
+            await ApiUsers.Authen.Register(userName, pass, phone, email)
             setRegister(false);
         }
     };
@@ -37,7 +35,7 @@ function UserLogin(props) {
         <div id='UserLogin'>
             <div className='login_content'>
 
-                <div className='login_item'>
+                <div className='login_item bgr_white'>
 
                     <div className='login_icon'>
                         <i className="fa fa-user"></i>
@@ -119,9 +117,9 @@ function UserLogin(props) {
 
                     }
                     <div className='item fogot_pass mt-3 d-flex justify-content-between align-items-center'>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" checked={remember} onChange={() => handleRemember()} id="flexCheckDefault" />
-                            <label class="form-check-label" for="flexCheckDefault">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" checked={remember} onChange={() => handleRemember()} id="flexCheckDefault" />
+                            <label className="form-check-label" htmlFor="flexCheckDefault">
                                 Remember me
                             </label>
                         </div>

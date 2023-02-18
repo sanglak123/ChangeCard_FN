@@ -1,11 +1,10 @@
 import { LoginAdminSuccess } from '@/redux/slice/AdminSlice';
-import { ApiAdmin } from 'data/callApi/ApiAdmin';
+import { ApiAdmins } from 'data/api/admins';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
 
 function AdminLogin(props) {
     const dispatch = useDispatch();
@@ -22,11 +21,11 @@ function AdminLogin(props) {
     const [remember, setRemember] = useState(window.localStorage.getItem("remember"));
 
     const handleAdminLogin = async () => {
-        await ApiAdmin.Authen.Login(dispatch, LoginAdminSuccess, userName, pass, key, router)       
+        await ApiAdmins.Authen.Login(dispatch, LoginAdminSuccess, userName, pass, key, router)
     };
 
     const handleAdminRegister = async () => {
-        await ApiAdmin.Authen.Register(userName, pass, phone, email, key);
+        await ApiAdmins.Authen.Register(userName, pass, phone, email, key);
         setRegister(false);
     };
 

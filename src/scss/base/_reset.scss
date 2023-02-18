@@ -68,14 +68,6 @@ body {
     margin: 15px 0;
 }
 
-.bgr_linear {
-    background: #9053c7;
-    background: -webkit-linear-gradient(-135deg, #c850c0, #4158d0);
-    background: -o-linear-gradient(-135deg, #c850c0, #4158d0);
-    background: -moz-linear-gradient(-135deg, #c850c0, #4158d0);
-    background: linear-gradient(-135deg, #c850c0, #4158d0);
-}
-
 .bgr_white {
     padding: 20px;
     background-color: rgb(255, 255, 255) !important;
@@ -88,7 +80,7 @@ body {
     width: 150px;
     height: 150px;
     text-align: center;
-    border: 1px solid white;
+    border: 5px solid $cl_green_100;
     border-radius: 100%;
     margin: 25px auto;
     position: relative;

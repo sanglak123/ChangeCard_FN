@@ -33,19 +33,19 @@ function ChangeCards(props) {
     console.log(ChangeCards)
     return (
         <div id='change_card'>
-            <div className='change_card_content layout_wrapter'>
+            <div className='change_card_content bgr_white mt-2'>
                 <div className='hearder_hag'>
                     <h1>ChangeCards</h1>
                 </div>
                 <div className='table_change_card'>
                     <div className='total_price d-flex justify-content-between align-items-center'>
-                        <p>Total Change Cards : {formatMoney(total.change)}</p>
-                        <p>Total Receive : {formatMoney(total.receive)}</p>
-                        <p>Total Free Money : {formatMoney(total.freeMoney)}</p>
+                        <p>Total Change Cards : <span className='text-danger txt_bold'>{formatMoney(total.change)}</span></p>
+                        <p>Total Receive : <span className='text-danger txt_bold'>{formatMoney(total.receive)}</span></p>
+                        <p>Total Free Money : <span className='text-danger txt_bold'>{formatMoney(total.freeMoney)}</span></p>
                     </div>
-                    <Table bordered size="sm">
+                    <Table bordered hover striped    size="sm">
                         <thead>
-                            <tr className='txt_white txt_center'>
+                            <tr className='txt_center'>
                                 <th>#</th>
                                 <th>Telco</th>
                                 <th>Value</th>
@@ -60,7 +60,7 @@ function ChangeCards(props) {
                             {
                                 ChangeCards?.map((item, index) => {
                                     return (
-                                        <tr key={index} className='txt_white txt_center'>
+                                        <tr key={index} className='txt_center'>
                                             <td>{index + 1}</td>
                                             <td>{item.Price.Card.telco}</td>
                                             <td>{formatMoney(item.Price.Value.name)}</td>

@@ -1,4 +1,4 @@
-const { Prices, Cards, Values, Users, RefreshTokens, Imgs, Products } = require("../../db/models");
+const { Prices, Cards, Values, Users, RefreshTokens, Imgs, Products, Banks, BankOfUsers } = require("../../db/models");
 const axios = require("axios");
 const { Op, FLOAT } = require("sequelize");
 const dotenv = require("dotenv");
@@ -445,6 +445,76 @@ const ControllAdmin = {
                 return res.status(200).json({ Users: listUsers, ChangeCards: listChangeCards, BuyCards: listBuyCards })
             } catch (error) {
                 return res.status(500).json(err);
+            }
+        }
+    },
+    Banks: {
+        Add: async (req, res) => {
+            const { name, sign } = req.body;
+            try {
+                const oldBank = await Banks.findOne({
+                    where: {
+                        [Op.and]: [
+                            { name: name },
+                            { sign: sign }
+                        ]
+                    }
+                });
+                if (oldBank) {
+                    return res.status(400).json({ error: "Bank already exits!" })
+                } else {
+                    await Banks.create({
+                        name: name,
+                        sign: sign
+                    });
+                    return res.status(201).json({ mess: "Add success!" })
+                }
+            } catch (error) {
+                return res.status(500).json(error)
+            }
+        },
+        Edit: async (req, res) => {
+            const { id } = req.query;
+            const { name, sign } = req.body;
+            try {
+                const bank = await Banks.findOne({
+                    where: {
+                        id: id
+                    }
+                });
+                if (bank) {
+                    bank.name = name;
+                    bank.sign = sign;
+                    await bank.save();
+                    return res.status(200).json({ mess: "Edit success!" })
+                } else {
+                    return res.status(404).json({ error: "Bank not found!" })
+                }
+            } catch (error) {
+                return res.status(500).json(error)
+            }
+        },
+        Delete: async (req, res) => {
+            const { id } = req.query;
+            try {
+                const bank = await Banks.findOne({
+                    where: {
+                        id: id
+                    }
+                });
+                if (bank) {
+                    await BankOfUsers.destroy({
+                        where: {
+                            idBank: bank.id
+                        }
+                    })
+                    await bank.destroy();
+                    return res.status(200).json({ mess: "Delete success!" })
+                } else {
+                    return res.status(404).json({ error: "Bank not found!" })
+                }
+            } catch (error) {
+                return res.status(500).json(error)
             }
         }
     }

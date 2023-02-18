@@ -9,6 +9,7 @@ import { Button, ButtonGroup, Container, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import { toast } from 'react-toastify';
 
 function BuyCardsUser(props) {
     const dispatch = useDispatch();
@@ -40,12 +41,14 @@ function BuyCardsUser(props) {
                 feesBuy: price.feesBuy,
                 count: 1
             };
-            dispatch(ChooseCardSuccess(item))
+            dispatch(ChooseCardSuccess(item));
+            toast.success(`${item.telco} - ${formatMoney(item.value)}`)
         }
     };
 
     const handleAddCard = (price) => {
-        dispatch(AddCardSuccess(price))
+        dispatch(AddCardSuccess(price));
+    
     };
 
     const handleSubtractionCard = (price) => {
@@ -53,7 +56,8 @@ function BuyCardsUser(props) {
     };
 
     const handleDeleteCard = (item) => {
-        dispatch(DeleteCardSuccess(item))
+        dispatch(DeleteCardSuccess(item));
+        toast.info(`Delete ${item.telco} - ${formatMoney(item.value)}`)
     }
 
     const [totalPrice, setTotalPrice] = useState("");
@@ -76,7 +80,6 @@ function BuyCardsUser(props) {
 
     };
 
-    console.log(Store)
     return (
         <div id='BuyCardsUser'>
             <Container>
@@ -206,7 +209,7 @@ function BuyCardsUser(props) {
                                                                     </ButtonGroup>
                                                                 </div>
                                                                 <div>
-                                                                    <span className='me-2'>  {formatMoney((item.value - (item.value * item.feesBuy / 100))*item.count)}</span>
+                                                                    <span className='me-2'>  {formatMoney((item.value - (item.value * item.feesBuy / 100)) * item.count)}</span>
                                                                     <i onClick={() => handleDeleteCard(item)} className="fa fa-trash-alt"></i>
                                                                 </div>
                                                             </div>

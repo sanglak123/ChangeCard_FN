@@ -1,13 +1,17 @@
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { persistor, Store } from '../redux/store';
-import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, Store } from '@/redux/store';
+
 import { Provider } from 'react-redux';
+
+import { PersistGate } from 'redux-persist/integration/react';
 import Hearder from '@/layout/hearder/Hearder';
 import Footer from '@/layout/footer/Footer';
+
 
 function MyApp({ Component, pageProps }) {
 
@@ -19,7 +23,7 @@ function MyApp({ Component, pageProps }) {
         <Component {...pageProps} />
         <Footer />
         <ToastContainer
-          position="top-right"
+          position="bottom-right"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}

@@ -1,3 +1,4 @@
+import Banks from '@/components/dashboard/Banks';
 import BuyCards from '@/components/dashboard/BuyCards';
 import Cards from '@/components/dashboard/Cards';
 import ChangeCards from '@/components/dashboard/ChangeCards';
@@ -9,7 +10,7 @@ import DashboardUsers from '@/components/dashboard/Users';
 import DashboardWithdraw from '@/components/dashboard/Withdraw';
 import { AdminSelector } from '@/redux/selector/AdminSelector';
 import { LoadingDataAdminSuccess, LogoutAdminSuccess } from '@/redux/slice/AdminSlice';
-import { ApiAdmin } from 'data/callApi/ApiAdmin';
+import { ApiAdmins } from 'data/api/admins';
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -31,6 +32,7 @@ function Dashboard(props) {
             case "Cards": return <Cards />
             case "ChangeCards": return <ChangeCards />
             case "BuyCards": return <BuyCards />
+            case "Banks": return <Banks />
             case "Withdraws": return <DashboardWithdraw />
             case "Topups": return <DashboardTopup />
             case "Profile": return <DashboardProfile />
@@ -42,13 +44,13 @@ function Dashboard(props) {
 
     useEffect(() => {
         const LoadingDataAdmin = async () => {
-            await ApiAdmin.Data.GetAll(dispatch, LoadingDataAdminSuccess)
+            await ApiAdmins.Data.GetAll(dispatch, LoadingDataAdminSuccess)
         };
         LoadingDataAdmin();
     }, []);
 
     const handleAdminLogout = async () => {
-        await ApiAdmin.Authen.Logout(dispatch, LogoutAdminSuccess, router)
+        await ApiAdmins.Authen.Logout(dispatch, LogoutAdminSuccess, router)
     };
 
     return (
@@ -56,50 +58,54 @@ function Dashboard(props) {
             <div id='Dashboard'>
                 <div className='dashboard_content'>
 
-                    <div className='dashboard_menu'>
+                    <div className='dashboard_menu bgr_white p-0'>
 
-                        <div className='menu_hearder layout_wrapter'>
+                        <div className='menu_hearder'>
                             <div className='avatar'>
                                 <img src={Admin?.Img?.path} alt={Admin?.userName} className='img-fluid' />
                             </div>
                             <p>{Admin?.displayName ? Admin?.displayName : Admin?.userName}</p>
                         </div>
 
-                        <div className='menu_content layout_wrapter'>
+                        <div className='menu_content'>
 
-                            <div className='menu_item' onClick={() => setViews("Systems")}>
+                            <div className={views === "Systems" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Systems")}>
                                 <p>System</p>
                                 <i className="fa fa-server"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("Users")}>
+                            <div className={views === "Users" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Users")}>
                                 <p>Users</p>
                                 <i className="fa fa-user-friends"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("Cards")}>
+                            <div className={views === "Cards" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Cards")}>
                                 <p>Cards</p>
                                 <i className="fa fa-money-check-alt"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("Prices")}>
+                            <div className={views === "Prices" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Prices")}>
                                 <p>Prices</p>
                                 <i className="fa fa-money-check-alt"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("ChangeCards")}>
+                            <div className={views === "ChangeCards" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("ChangeCards")}>
                                 <p>Change Cards</p>
                                 <i className="fa fa-exchange-alt"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("BuyCards")}>
+                            <div className={views === "BuyCards" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("BuyCards")}>
                                 <p>Buy Cards</p>
                                 <i className="fa fa-audio-description"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("Withdraws")}>
+                            <div className={views === "Banks" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Banks")}>
+                                <p>Banks</p>
+                                <i className="fa fa-university"></i>
+                            </div>
+                            <div className={views === "Withdraws" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Withdraws")}>
                                 <p>Withdraw</p>
                                 <i className="fa fa-hand-holding-usd"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("Topups")}>
+                            <div className={views === "Topups" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Topups")}>
                                 <p>Topup</p>
                                 <i className="fa fa-dollar-sign"></i>
                             </div>
-                            <div className='menu_item' onClick={() => setViews("Profile")}>
+                            <div className={views === "Profile" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Profile")}>
                                 <p>Profile</p>
                                 <i className="fa fa-user-cog"></i>
                             </div>
@@ -114,7 +120,7 @@ function Dashboard(props) {
                     <div className='dashboard_views '>
 
                         <div className='dashboard_views_hearder'>
-                            <div className='views_hearder_item layot_wrapter'>
+                            <div className='views_hearder_item bgr_white'>
                                 <div className='hearder_left'>
                                     <span>Dashboard</span> - <span>{views}</span>
                                 </div>
