@@ -1,15 +1,24 @@
-import { formatMoney } from '@/config/formatMoney';
-import Note from '@/layout/note/Note';
-import { DataSelector } from '@/redux/selector/DataSelector';
-import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { formatMoney } from "@/config/formatMoney";
+import Note from "@/layout/note/Note";
+import { DataSelector } from "@/redux/selector/DataSelector";
+import { UserSelector } from "@/redux/selector/UserSelector";
+import { ChangeCardSuccess, LoadingDataUserSuccess } from "@/redux/slice/UserSlice";
+import { ApiCardsPublic } from "data/api/cardsPublic";
+import { ApiUsers } from "data/api/users";
+import { useEffect, useState } from "react";
+import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function UserChangeCard(props) {
+    const dispatch = useDispatch();
     //Data
     const Data = useSelector(DataSelector.Data);
     const Cards = Data?.Cards;
     const Prices = Data?.Prices;
+    //User
+    const User = useSelector(UserSelector.User);
+    const accessToken = useSelector(UserSelector.AccessToken);
 
     const listCardsChange = Cards?.filter(item => item.change === true);
 
@@ -28,6 +37,15 @@ function UserChangeCard(props) {
 
 
     const handleChangeCard = async () => {
+        if (code.length > 10 && serial.length > 10) {
+            const idToast = toast.loading("Đang gửi thẻ...")
+            await ApiCardsPublic.PostCards(telco, idValue, code, serial, User?.id, accessToken, dispatch, LoadingDataUserSuccess, ChangeCardSuccess, idToast);
+            await ApiUsers.Data.LoadingDataUser(User?.id, dispatch, LoadingDataUserSuccess);
+            setCode("");
+            setSerial("");
+        } else {
+            toast.error("Mã thẻ - Serial không đúng định dạng!");
+        }
 
     }
     return (

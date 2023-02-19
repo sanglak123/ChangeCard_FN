@@ -19,8 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     idUser: DataTypes.INTEGER,
     command: DataTypes.STRING,
     idPrice: DataTypes.INTEGER,
+    feesChange: DataTypes.STRING,
+    feesBuy: DataTypes.STRING,
+    receiveValue: DataTypes.STRING,
     code: DataTypes.STRING,
     serial: DataTypes.STRING,
+    sign: DataTypes.STRING,
+    request_id: DataTypes.STRING,
     status: DataTypes.STRING,
     count: DataTypes.INTEGER
   }, {

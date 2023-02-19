@@ -1,75 +1,14 @@
+import axios from "axios";
+
 const { Prices, Cards, Values, Users, RefreshTokens, TypeCards, Banks, Imgs, Products, BankOfUsers } = require("../../db/models");
 const bcryptjs = require("bcryptjs");
 const { CreateAccessToken, CreateRefreshToken } = require("data/token");
 const { Op } = require("sequelize");
-const axios = require("axios");
+
 const uuid = require("uuid");
 const CryptoJS = require("crypto-js");
 
 export const ControllerClients = {
-    Data: {
-        LoadingData: async (req, res) => {
-            try {
-                const listPrices = await Prices.findAll({
-                    include: [{ model: Cards, include: [{ model: Imgs }] }, { model: Values }]
-                });
-
-                const listTypeCards = await TypeCards.findAll();
-
-                const listCards = await Cards.findAll({
-                    include: [{ model: TypeCards }, { model: Imgs }]
-                });
-
-                const listValues = await Values.findAll();
-
-                const listBanks = await Banks.findAll();
-
-                const listProduct = await Products.findAll({
-                    where: {
-                        status: "Success"
-                    },
-                    include: [
-                        { model: Users },
-                        {
-                            model: Prices,
-                            include: [{ model: Cards }, { model: Values }]
-                        }
-                    ],
-                    order: [
-                        ["id", "desc"]
-                    ],
-                    limit: 10
-                })
-                return res.status(200).json(
-                    {
-                        Prices: listPrices,
-                        TypeCards: listTypeCards,
-                        Cards: listCards,
-                        Values: listValues,
-                        Banks: listBanks,
-                        Products: listProduct
-                    })
-            } catch (error) {
-                return res.status(500).json(error);
-            }
-        },
-        LoadDingDataUser: async (req, res) => {
-            const { id } = req.query;
-            try {
-                const listBankOfUser = await BankOfUsers.findAll({
-                    where: {
-                        idUser: id
-                    },
-                    include: [{ model: Banks }, { model: Users }]
-                });
-                return res.status(200).json({
-                    BankOfUsers: listBankOfUser
-                })
-            } catch (error) {
-                return res.status(500).json(error);
-            }
-        }
-    },
     Authen: {
         Login: async (req, res) => {
             const { userName, pass } = req.body;
@@ -160,7 +99,8 @@ export const ControllerClients = {
     },
     Cards: {
         PostCard: async (req, res) => {
-            const { idCard, code, serial, idValue, idUser } = req.body;
+            const { idUser } = req.query;
+            const { telco, idValue, code, serial } = req.body;
             try {
                 const user = await Users.findOne({
                     where: {
@@ -168,80 +108,60 @@ export const ControllerClients = {
                     }
                 });
                 if (user) {
-                    const card = await Cards.findOne({
+                    const oldProduct = await Products.findOne({
                         where: {
-                            id: idCard
+                            [Op.and]: [
+                                { serial: serial },
+                                { code: code },
+                                { command: "change" }
+                            ]
                         }
                     });
-                    if (card) {
-                        const value = await Values.findOne({
+                    if (oldProduct) {
+                        return res.status(400).json({ error: "Card đã tồn tại trên hệ thống!" })
+                    } else {
+                        const card = await Cards.findOne({ where: { telco: telco } });
+                        const value = await Values.findOne({ where: { id: idValue } })
+                        const price = await Prices.findOne({
                             where: {
-                                id: idValue
+                                [Op.and]: [
+                                    { idCard: card.id },
+                                    { idValue: idValue }
+                                ]
                             }
                         });
-                        if (value) {
-                            const oldProduct = await Products.findOne({
-                                where: {
-                                    [Op.and]: [
-                                        { code: code },
-                                        { serial: serial }
-                                    ]
-                                }
-                            });
-                            if (oldProduct) {
-                                return res.status(400).json({ error: "Card already exits!" })
-                            } else {
-                                const price = await Prices.findOne({
-                                    where: {
-                                        idCard: card.id
-                                    }
-                                });
-                                if (price) {
-                                    //Tạo mới Product
-                                    const newProduct = await Products.create({
-                                        idUser: idUser,
-                                        command: "change",
-                                        idPrice: price.id,
-                                        code: code,
-                                        serial: serial,
-                                        status: "Pending"
-                                    });
-                                    return res.status(201).json({ mess: "Thẻ đang xử lý!", Product: newProduct })
-                                    // //Call Api
-                                    // const request_id = uuid.v4({ serial: serial }).replace(/\-/g, '').toString();
-                                    // const sign = CryptoJS.MD5(process.env.PARTNER_KEY + code + serial).toString();
-                                    // await axios({
-                                    //     method: "POST",
-                                    //     url: process.env.DOMAIN_POSTCARD,
-                                    //     data: {
-                                    //         telco: card.telco,
-                                    //         code: code,
-                                    //         serial: serial,
-                                    //         amount: value.name,
-                                    //         request_id: request_id,
-                                    //         partner_id: process.env.PARTNER_ID,
-                                    //         sign: sign,
-                                    //         command: "charging"
-                                    //     }
-                                    // }).then((responsive) => {
-                                    //     return res.status(200).json({ status: responsive.data.status, mess: "Thẻ đang được xử lý vui lòng chờ trong giây lát" })
-                                    // }).catch((err) => {
-                                    //     return res.status(500).json(err)
-                                    // })
-                                } else {
-                                    return res.status(404).json({ error: "Price not found!" })
-                                }
+                        const request_id = uuid.v4({ serial: serial }).replace(/\-/g, '').toString();
+                        const sign = CryptoJS.MD5(process.env.PARTNER_KEY + code + serial).toString();
+                        const newProduct = await Products.create({
+                            command: "change",
+                            idUser: idUser,
+                            code: code,
+                            serial: serial,
+                            idPrice: price.id,
+                            status: "Pending"
+                        });
+                        //CallApi
+                        await axios({
+                            method: "POST",
+                            url: process.env.DOMAIN_POSTCARD,
+                            data: {
+                                telco: newProduct.telco,
+                                code: newProduct.code,
+                                amount: value.name,
+                                request_id: request_id,
+                                partner_id,
+                                sign: sign,
+                                command: "charging"
                             }
-                        } else {
-                            return res.status(404).json({ error: "Value not found!" })
-                        }
-                    } else {
-                        return res.status(404).json({ error: "Card not found!" })
+                        }).then((responsive) => {
+                            return res.status(200).json({ mess: "Gửi thẻ thành công", DataResponsive: responsive.data, Product: newProduct })
+                        }).catch((err) => {
+                            return res.status(500).json(err);
+                        })
                     }
                 } else {
                     return res.status(404).json({ error: "User not found!" })
                 }
-
             } catch (error) {
                 return res.status(500).json(error);
             }
@@ -344,7 +264,87 @@ export const ControllerClients = {
                 return res.status(500).json(error);
             }
         }
-    }
+    },
+    Data: {
+        LoadingData: async (req, res) => {
+            try {
+                const listPrices = await Prices.findAll({
+                    include: [{ model: Cards, include: [{ model: Imgs }] }, { model: Values }]
+                });
+
+                const listTypeCards = await TypeCards.findAll();
+
+                const listCards = await Cards.findAll({
+                    include: [{ model: TypeCards }, { model: Imgs }]
+                });
+
+                const listValues = await Values.findAll();
+
+                const listBanks = await Banks.findAll();
+
+                const listProduct = await Products.findAll({
+                    where: {
+                        status: "Success"
+                    },
+                    include: [
+                        { model: Users },
+                        {
+                            model: Prices,
+                            include: [{ model: Cards }, { model: Values }]
+                        }
+                    ],
+                    order: [
+                        ["id", "desc"]
+                    ],
+                    limit: 10
+                })
+                return res.status(200).json(
+                    {
+                        Prices: listPrices,
+                        TypeCards: listTypeCards,
+                        Cards: listCards,
+                        Values: listValues,
+                        Banks: listBanks,
+                        Products: listProduct
+                    })
+            } catch (error) {
+                return res.status(500).json(error);
+            }
+        },
+        LoadDingDataUser: async (req, res) => {
+            const { id } = req.query;
+            try {
+                const user = await Users.findOne({
+                    where: {
+                        id: id
+                    }
+                });
+                user.pass = null;
+                const listBankOfUser = await BankOfUsers.findAll({
+                    where: {
+                        idUser: id
+                    },
+                    include: [{ model: Banks }, { model: Users }]
+                });
+                const listProducts = await Products.findAll({
+                    where: {
+                        idUser: id
+                    },
+                    include: [{ model: Prices, include: [{ model: Cards }, { model: Values }] }, { model: Users }],
+                    order: [
+                        ["id", "desc"]
+                    ]
+                })
+                return res.status(200).json({
+                    User: user,
+                    BankOfUsers: listBankOfUser,
+                    Products: listProducts
+                })
+            } catch (error) {
+                return res.status(500).json(error);
+            }
+        }
+    },
 };
 
 export const CheckCard = async (req, res) => {

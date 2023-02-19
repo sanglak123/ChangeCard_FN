@@ -7,7 +7,7 @@ function News(props) {
     //Data
     const Data = useSelector(DataSelector.Data);
     const Products = Data?.Products;
- 
+  
     return (
         <div id='news'>
             <div className='news_content'>

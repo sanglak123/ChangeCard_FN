@@ -107,9 +107,10 @@ const ControllAdmin = {
         },
         Logout: async (req, res) => {
             try {
+                res.clearCookie("refreshToken");
                 return res.end();
             } catch (error) {
-                res.clearCookie("refreshToken");
+
                 return res.status(500).json(error);
             }
         },
@@ -257,7 +258,7 @@ const ControllAdmin = {
                             });
                         }
                     };
-                    return res.status(200).json({ Data: responsive.data, Cards: listCard, Prices: listPrice })
+                    return res.status(200).json({ Data: responsive.data, Cards: listCard, Prices: listPrice, mess: "Update success!" })
                 }).catch((err) => {
                     return res.status(500).json(err);
                 })

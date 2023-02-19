@@ -1,5 +1,4 @@
 import { ControllCardPublic } from "data/controller/cards";
-import { ControllerClients } from "data/controller/client";
 import { CheckLogin } from "data/middleware";
 import nextConnect from "next-connect";
 
@@ -14,7 +13,11 @@ const apiRoute = nextConnect({
     },
 });
 
-apiRoute.get(ControllerClients.Data.LoadDingDataUser);
+apiRoute.get((req, res) => {
+    return res.status(200).json({ mess: "User Check Card" })
+});
+
+apiRoute.post(CheckLogin, ControllCardPublic.CheckCard)
 
 export default apiRoute;
 

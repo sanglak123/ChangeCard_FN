@@ -26,10 +26,25 @@ module.exports = {
           key: "id"
         }
       },
+      feesChange: {
+        type: Sequelize.STRING
+      },
+      feesBuy: {
+        type: Sequelize.STRING
+      },
+      receiveValue: {
+        type: Sequelize.STRING
+      },
       code: {
         type: Sequelize.STRING
       },
       serial: {
+        type: Sequelize.STRING
+      },
+      sign: {
+        type: Sequelize.STRING
+      },
+      request_id: {
         type: Sequelize.STRING
       },
       status: {

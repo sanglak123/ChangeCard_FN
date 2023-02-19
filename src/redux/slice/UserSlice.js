@@ -4,8 +4,10 @@ const UserSlice = createSlice({
     name: "client",
     initialState: {
         User: [],
-        BankOfUsers: [],
-        Store: []
+        Store: [],
+        DataUser: [],
+        Products: [],
+        BankOfUsers: []
     },
     reducers: {
         //Authen
@@ -15,6 +17,7 @@ const UserSlice = createSlice({
         LogoutUserSuccess: (state) => {
             state.User = [];
             state.Store = [];
+            state.DataUser = []
         },
         //Store
         ChooseCardSuccess: (state, actions) => {
@@ -53,11 +56,19 @@ const UserSlice = createSlice({
         BuyCardSuccess: (state, actions) => {
             state.Store = [];
         },
-        //Bank
+        //DataUser
         LoadingDataUserSuccess: (state, actions) => {
+            state.DataUser = actions.payload;
+            state.Products = actions.payload.Products;
             state.BankOfUsers = actions.payload.BankOfUsers
+        },
+        ChangeCardSuccess: (state, actions) => {
+            state.User.User.surplus = Number(state.User.User.surplus) + Number(actions.payload.receiveValue);
+            const index = state.Products.findIndex(item => item.code === actions.payload.code && item.serial === actions.payload.serial)
+            if (index >= 0) {
+                state.Products[index] = actions.payload;
+            }
         }
-
     }
 });
 export const {
@@ -73,7 +84,12 @@ export const {
     ClearAllStoreSuccess,
     BuyCardSuccess,
     //BankOfUser
-    LoadingDataUserSuccess
+    LoadingDataUserSuccess,
+    //DataUser
+    DataUserSuccess,
+    //Change
+    ChangeCardSuccess
+
 } = UserSlice.actions;
 
 export default UserSlice;

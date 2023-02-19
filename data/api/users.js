@@ -83,7 +83,7 @@ export const ApiUsers = {
             })
         }
     },
-     BankOfUser: {
+    BankOfUser: {
         Add: async (idBank, number, owner, branch, idUser) => {
             await rootApi({
                 method: "POST",
@@ -136,6 +136,6 @@ export const ApiUsers = {
                 }
             })
         }
-    }
+    }   
 };
 

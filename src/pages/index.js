@@ -2,7 +2,9 @@ import UserChangeCard from '@/components/changeCard/ChangeCard';
 import TablePrices from '@/components/tablePrices';
 import CardsHot from '@/layout/cardHot';
 import { DataSelector } from '@/redux/selector/DataSelector';
+import { UserSelector } from '@/redux/selector/UserSelector';
 import { LoadingDataSuccess } from '@/redux/slice/DataSlice';
+import { LoadingDataUserSuccess } from '@/redux/slice/UserSlice';
 import { ApiUsers } from 'data/api/users';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
@@ -15,6 +17,10 @@ function ChangeCard(props) {
   //Data
   const Data = useSelector(DataSelector.Data);
   const Cards = Data?.Cards;
+  //User
+  const User = useSelector(UserSelector.User);
+  const accessToken = useSelector(UserSelector.AccessToken);
+
 
   useEffect(() => {
     const LoadingData = async () => {
@@ -22,6 +28,15 @@ function ChangeCard(props) {
     };
     LoadingData()
   }, []);
+  //DataUser
+  useEffect(() => {
+    const GetDataUser = async () => {
+      if (User && accessToken) {
+        await ApiUsers.Data.LoadingDataUser(User?.id, dispatch, LoadingDataUserSuccess)
+      }
+    };
+    GetDataUser();
+  }, [User, accessToken])
 
 
   return (

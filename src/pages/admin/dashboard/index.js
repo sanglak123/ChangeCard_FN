@@ -50,7 +50,7 @@ function Dashboard(props) {
     }, []);
 
     const handleAdminLogout = async () => {
-        await ApiAdmins.Authen.Logout(dispatch, LogoutAdminSuccess, router)
+        await ApiAdmins.Authen.Logout(dispatch, LogoutAdminSuccess, router, AccessToken);     
     };
 
     return (

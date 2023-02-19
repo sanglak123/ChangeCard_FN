@@ -105,11 +105,14 @@ export const ApiAdmins = {
         }
     },
     Authen: {
-        Login: async (dispatch, LoginAdminSuccess, userName, pass, key, router) => {
+        Login: async (dispatch, LoginAdminSuccess, userName, pass, key, router, accessToken) => {
             await rootApi({
                 method: "POST",
                 url: "/admin/authen/login",
-                data: { userName, pass, key }
+                data: { userName, pass, key },
+                headers: {
+                    accesstoken: accessToken
+                }
             }).then((res) => {
                 toast.success(res.data.mess);
                 dispatch(LoginAdminSuccess(res.data));
@@ -137,10 +140,13 @@ export const ApiAdmins = {
                 }
             })
         },
-        Logout: async (dispatch, LogoutAdminSuccess, router) => {
+        Logout: async (dispatch, LogoutAdminSuccess, router, accessToken) => {
             await rootApi({
                 method: "POST",
-                url: "/admin/authen/logout"
+                url: "/admin/authen/logout",
+                headers: {
+                    accesstoken: accessToken
+                }
             }).then((res) => {
                 toast.success("Logout success!");
                 dispatch(LogoutAdminSuccess());
@@ -182,7 +188,7 @@ export const ApiAdmins = {
             await rootApi({
                 method: "GET",
                 url: "/admin/data",
-            }).then((res) => {              
+            }).then((res) => {
                 dispatch(LoadingDataAdmin(res.data))
             }).catch((err) => {
                 if (err.response) {
