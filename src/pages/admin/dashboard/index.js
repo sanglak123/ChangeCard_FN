@@ -8,9 +8,12 @@ import DashboardSystems from '@/components/dashboard/Systems';
 import DashboardTopup from '@/components/dashboard/Topup';
 import DashboardUsers from '@/components/dashboard/Users';
 import DashboardWithdraw from '@/components/dashboard/Withdraw';
-import { AdminSelector } from '@/redux/selector/AdminSelector';
+import { UserSelector } from '@/redux/selector/UserSelector';
 import { LoadingDataAdminSuccess, LogoutAdminSuccess } from '@/redux/slice/AdminSlice';
+import { LogoutUserSuccess } from '@/redux/slice/UserSlice';
 import { ApiAdmins } from 'data/api/admins';
+import { CreateAxiosInstance } from 'data/api/axiosClient/createAxiosInstance';
+import { ApiUsers } from 'data/api/users';
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -21,21 +24,46 @@ function Dashboard(props) {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const Admin = useSelector(AdminSelector.Admin);
-    const AccessToken = useSelector(AdminSelector.AccessToken);
+    const User = useSelector(UserSelector.User);
+    const AccessToken = useSelector(UserSelector.AccessToken);
     const [views, setViews] = useState("Systems");
+    const axiosJwt = CreateAxiosInstance(dispatch, AccessToken)
 
     const handleRenderViewsDashboard = () => {
         switch (views) {
-            case "Users": return <DashboardUsers />
-            case "Prices": return <Prices />
-            case "Cards": return <Cards />
-            case "ChangeCards": return <ChangeCards />
-            case "BuyCards": return <BuyCards />
+            case "Users": return <DashboardUsers
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
+            case "Prices": return <Prices
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
+            case "Cards": return <Cards
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
+            case "ChangeCards": return <ChangeCards
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
+            case "BuyCards": return <BuyCards
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
             case "Banks": return <Banks />
-            case "Withdraws": return <DashboardWithdraw />
-            case "Topups": return <DashboardTopup />
-            case "Profile": return <DashboardProfile />
+            case "Withdraws": return <DashboardWithdraw
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
+            case "Topups": return <DashboardTopup
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
+            case "Profile": return <DashboardProfile
+                axiosJwt={axiosJwt}
+                accessToken={AccessToken}
+            />
 
             default:
                 return <DashboardSystems />
@@ -44,17 +72,19 @@ function Dashboard(props) {
 
     useEffect(() => {
         const LoadingDataAdmin = async () => {
-            await ApiAdmins.Data.GetAll(dispatch, LoadingDataAdminSuccess)
+            await ApiAdmins.Data.GetAll(dispatch, LoadingDataAdminSuccess, axiosJwt, AccessToken)
         };
         LoadingDataAdmin();
     }, []);
 
     const handleAdminLogout = async () => {
-        await ApiAdmins.Authen.Logout(dispatch, LogoutAdminSuccess, router, AccessToken);     
+        await ApiUsers.Authen.Logout(dispatch, LogoutUserSuccess, router, AccessToken);
+        dispatch(LogoutAdminSuccess());
     };
 
+    console.log(User)
     return (
-        AccessToken ?
+        User?.admin && AccessToken ?
             <div id='Dashboard'>
                 <div className='dashboard_content'>
 
@@ -62,9 +92,9 @@ function Dashboard(props) {
 
                         <div className='menu_hearder'>
                             <div className='avatar'>
-                                <img src={Admin?.Img?.path} alt={Admin?.userName} className='img-fluid' />
+                                <img src={User?.Img?.path} alt={User?.userName} className='img-fluid' />
                             </div>
-                            <p>{Admin?.displayName ? Admin?.displayName : Admin?.userName}</p>
+                            <p>{User?.displayName ? User?.displayName : User?.userName}</p>
                         </div>
 
                         <div className='menu_content'>
@@ -102,7 +132,7 @@ function Dashboard(props) {
                                 <i className="fa fa-hand-holding-usd"></i>
                             </div>
                             <div className={views === "Topups" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Topups")}>
-                                <p>Topup</p>
+                                <p>Refill</p>
                                 <i className="fa fa-dollar-sign"></i>
                             </div>
                             <div className={views === "Profile" ? "menu_active menu_item" : "menu_item"} onClick={() => setViews("Profile")}>

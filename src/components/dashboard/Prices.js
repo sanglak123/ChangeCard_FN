@@ -1,8 +1,10 @@
 import { formatMoney } from '@/config/formatMoney';
 import TableCardsRender from '@/layout/tablePrice/TableCardsRender';
 import { DataSelector } from '@/redux/selector/DataSelector';
-import { LoadingDataSuccess } from '@/redux/slice/DataSlice';
+import { UserSelector } from '@/redux/selector/UserSelector';
+import { LoadingDataSuccess, UpdatePriceSuccess } from '@/redux/slice/DataSlice';
 import { ApiAdmins } from 'data/api/admins';
+import { CreateAxiosInstance } from 'data/api/axiosClient/createAxiosInstance';
 import { ApiUsers } from 'data/api/users';
 import React, { useState } from 'react';
 import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
@@ -10,30 +12,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
-function Prices(props) {
+function Prices({ axiosJwt, accessToken }) {
     const dispatch = useDispatch();
-    //Data
-    const Data = useSelector(DataSelector.Data);
-    const Cards = Data?.Cards;
+    //Data   
+    const Cards = useSelector(DataSelector.Cards);
     const PhoneCards = Cards?.filter(item => item.TypeCard.name === "Phone");
     const GameCards = Cards?.filter(item => item.TypeCard.name === "Game");
 
     const [cardRender, setCardRender] = useState("VIETTEL");
 
     const handleUpdatePrice = async () => {
-        await ApiAdmins.Prices.Update();
-        await ApiUsers.Data.LoadingData(dispatch, LoadingDataSuccess)
+        await ApiAdmins.Prices.Update(dispatch, UpdatePriceSuccess, axiosJwt, accessToken);
     };
 
     //Add
-    const Values = Data?.Values;
+    const Values = useSelector(DataSelector.Values);
     const [feesBuy, setFeesBuy] = useState("");
     const [feesChange, setFeesChange] = useState("");
     const [idValue, setIdValue] = useState("");
 
     const handleAddPrice = async () => {
         const card = Cards.find((item) => item.telco === cardRender);
-        await ApiAdmins.Prices.Add(card.id, idValue, feesChange, feesBuy);
+        await ApiAdmins.Prices.Add(card.id, idValue, feesChange, feesBuy, axiosJwt, accessToken);
         await ApiUsers.Data.LoadingData(dispatch, LoadingDataSuccess);
     };
 

@@ -1,5 +1,7 @@
 import { DataSelector } from '@/redux/selector/DataSelector';
-import { LoadingDataSuccess } from '@/redux/slice/DataSlice';
+import { UserSelector } from '@/redux/selector/UserSelector';
+import { ChangeTypeCardSuccess, LoadingDataSuccess } from '@/redux/slice/DataSlice';
+import { AdminApiCards } from 'data/api/admin/cards';
 import { ApiAdmins } from 'data/api/admins';
 import { ApiUsers } from 'data/api/users';
 import React, { useEffect, useState } from 'react';
@@ -7,11 +9,12 @@ import { Button, ButtonGroup, Form, InputGroup, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 function Cards(props) {
+    const accessToken = useSelector(UserSelector.AccessToken);
 
     const dispatch = useDispatch();
+
     //Data
-    const Data = useSelector(DataSelector.Data);
-    const Cards = Data?.Cards;
+    const Cards = useSelector(DataSelector.Cards);
 
     //List Card
     const limit = 10;
@@ -32,7 +35,7 @@ function Cards(props) {
 
     useEffect(() => {
         const offset = (pageCard - 1) * limit;
-        const lits = Cards.slice(offset, (offset + limit));
+        const lits = Cards?.slice(offset, (offset + limit));
         setListCard(lits);
     }, [Cards, pageCard]);
 
@@ -47,6 +50,9 @@ function Cards(props) {
         await ApiUsers.Data.LoadingData(dispatch, LoadingDataSuccess)
         setEdit("")
     };
+    const handleChangeTypeCard = async (card) => {
+        await AdminApiCards.ChangeType(card.id, accessToken, dispatch, ChangeTypeCardSuccess);
+    }
     //Delete
     const handleDeleteCard = async (card) => {
         await ApiAdmins.Cards.Delete(card.id)
@@ -126,11 +132,12 @@ function Cards(props) {
                                                                 <img src={item.Img?.path} alt={item.telco} className="img-fluid" />
                                                             </div>
                                                         </td>
-                                                        <td>{item.TypeCard.name}</td>
+                                                        <td>{item.TypeCard?.name}</td>
                                                         <td>
                                                             <Form.Check
                                                                 type={"switch"}
                                                                 checked={item.change}
+                                                                onChange={() => handleChangeTypeCard(item)}
                                                             />
                                                         </td>
 

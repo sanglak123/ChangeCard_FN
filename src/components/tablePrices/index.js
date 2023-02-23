@@ -7,18 +7,17 @@ import { useDispatch, useSelector } from 'react-redux';
 function TablePrices(props) {
     const dispatch = useDispatch();
 
-    //Data
-    const Data = useSelector(DataSelector.Data);
-    const Cards = Data?.Cards;
+    //Data   
+    const Cards = useSelector(DataSelector.Cards);
     const listCardsChange = Cards?.filter(item => item.change === true);
-    const Prices = Data?.Prices;
+    const Prices = useSelector(DataSelector.Prices);    
 
     const [cardRender, setCardRender] = useState("VIETTEL");
     const [PriceRender, setPriceRender] = useState([]);
     useEffect(() => {
         const list = Prices?.filter(item => item.Card.telco === cardRender);
         setPriceRender(list);
-    }, [Data, cardRender]);
+    }, [cardRender]);
 
     //Date
     const handleRenderToday = () => {

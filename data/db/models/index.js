@@ -18,6 +18,7 @@ const RefreshTokens = require("./refreshtokens");
 const TypeCards = require("./typecards");
 const Values = require("./values");
 const Imgs = require("./imgs");
+const ReceiveBanks = require("./receivebanks");
 
 let sequelize;
 if (config.use_env_variable) {
@@ -37,6 +38,7 @@ db.RefreshTokens = RefreshTokens(sequelize, Sequelize);
 db.TypeCards = TypeCards(sequelize, Sequelize);
 db.Values = Values(sequelize, Sequelize);
 db.Imgs = Imgs(sequelize, Sequelize);
+db.ReceiveBanks = ReceiveBanks(sequelize, Sequelize);
 
 
 Object.keys(db).forEach(modelName => {

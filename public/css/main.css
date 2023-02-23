@@ -157,6 +157,14 @@ body {
   font-weight: bold !important;
 }
 
+.txt_right {
+  text-align: right;
+}
+
+.txt_left {
+  text-align: left;
+}
+
 .hide {
   display: none !important;
 }
@@ -535,7 +543,6 @@ body {
 }
 #profile .profile_content .Profile_setting .profile_content .profile_item input {
   color: black;
-  font-weight: bold;
 }
 #profile .profile_btn {
   position: absolute;
@@ -712,8 +719,8 @@ body {
   border: none;
 }
 #UserLogin .login_content .login_item .btn_login button {
-  color: white;
   background-color: rgb(1, 1, 63);
+  color: white;
   border: none;
   padding: 15px;
   margin-top: 15px;
@@ -731,25 +738,41 @@ body {
   background-color: transparent;
   border: none;
   margin-top: 30px;
-  color: white;
   transition: 0.5s;
 }
 #UserLogin .login_content .login_item .btn_register button i {
   margin-left: 10px;
+  transition: 0.5s;
 }
 #UserLogin .login_content .login_item .btn_register:hover button {
   color: #212529;
+  font-weight: 700;
+}
+#UserLogin .login_content .login_item .btn_register:hover i {
+  animation: autoTranform 0.5s infinite;
 }
 #UserLogin .btn_back {
   position: fixed;
   top: 15px;
   right: 15px;
-  color: white;
+  color: black;
   text-decoration: none;
   transition: 0.5s;
 }
+#UserLogin .btn_back::after {
+  content: "";
+  width: 0%;
+  display: block;
+  height: 2px;
+  background-color: rgb(1, 54, 20);
+  transition: 0.5s;
+}
 #UserLogin .btn_back:hover {
-  color: #212529;
+  color: rgb(1, 54, 20);
+  font-weight: 700;
+}
+#UserLogin .btn_back:hover::after {
+  width: 100%;
 }
 
 #Dashboard {
@@ -827,8 +850,6 @@ body {
 }
 #Dashboard .dashboard_content .dashboard_views .dashboard_views_hearder .views_hearder_item .hearder_right a {
   text-decoration: none;
-  color: white;
-  font-weight: bold;
   transition: 0.5s;
 }
 #Dashboard .dashboard_content .dashboard_views .dashboard_views_hearder .views_hearder_item .hearder_right:hover a {

@@ -17,10 +17,13 @@ export const ApiUsers = {
                 }
             })
         },
-        LoadingDataUser: async (idUser, dispatch, LoadingDataUserSuccess) => {
-            await rootApi({
+        LoadingDataUser: async (idUser, dispatch, LoadingDataUserSuccess, axiosJwt, accessToken) => {
+            await axiosJwt({
                 method: "GET",
-                url: `/users/${idUser}`
+                url: `/users/${idUser}`,
+                headers: {
+                    token: "Bearner " + accessToken
+                }
             }).then((res) => {
                 dispatch(LoadingDataUserSuccess(res.data))
             }).catch((err) => {
@@ -84,19 +87,17 @@ export const ApiUsers = {
         }
     },
     BankOfUser: {
-        Add: async (idBank, number, owner, branch, idUser) => {
+        Add: async (idBank, number, owner, branch, idUser, dispatch, AddBankOfUserSuccess) => {
             await rootApi({
                 method: "POST",
                 url: "/users/banks",
                 data: { idBank, number, owner, branch, idUser }
             }).then((res) => {
-                if (res.status === 200) {
-                    toast.success(res.data.mess);
-                }
-
+                toast.success(res.data.mess);
+                dispatch(AddBankOfUserSuccess(res.data.BankOfUser));
             }).catch((err) => {
                 if (err.response) {
-                    toast.success("Error")
+                    toast.error(err.response.data.error);
                 } else {
                     toast.error(err);
                 }
@@ -113,7 +114,7 @@ export const ApiUsers = {
                 }
             }).catch((err) => {
                 if (err.response) {
-                    toast.success("Error")
+                    toast.error(err.response.data.error);
                 } else {
                     toast.error(err);
                 }
@@ -130,12 +131,38 @@ export const ApiUsers = {
                 }
             }).catch((err) => {
                 if (err.response) {
-                    toast.success("Error")
+                    toast.error(err.response.data.error);
                 } else {
                     toast.error(err);
                 }
             })
         }
-    }   
+    },
+    Refill: {
+        Create: async (idUser, amount, idBankOfUser, idBankPublic, photo, accessToken) => {
+            const formData = new FormData();
+            formData.append("photo", photo);
+            formData.append("amount", amount);
+            formData.append("idBankOfUser", idBankOfUser);
+            formData.append("idBankPublic", idBankPublic);
+
+            await rootApi({
+                method: "POST",
+                url: `/users/refill/${idUser}`,
+                headers: {
+                    accesstoken: accessToken
+                },
+                data: formData
+            }).then((res) => {
+                console.log(res.data)
+            }).catch((err) => {
+                if (err.response) {
+                    toast.error(err.response.data.error);
+                } else {
+                    toast.error(err);
+                }
+            })
+        }
+    }
 };
 

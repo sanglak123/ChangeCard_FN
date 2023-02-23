@@ -1,4 +1,4 @@
-import { formatMoney } from '@/config/formatMoney';
+import { formatDate, formatMoney } from '@/config/formatMoney';
 import { AdminSelector } from '@/redux/selector/AdminSelector';
 import React, { useEffect, useState } from 'react';
 import { Button, ButtonGroup, Table } from 'react-bootstrap';
@@ -6,8 +6,7 @@ import { useSelector } from 'react-redux';
 import ModalViewsUser from '../modal/ViewsUser';
 
 function DashboardUsers(props) {
-    const Data = useSelector(AdminSelector.Data);
-    const Users = Data?.Users;
+    const Users = useSelector(AdminSelector.Data.Users); 
     const limit = 12;
 
     const [page, setPage] = useState(1);
@@ -49,10 +48,12 @@ function DashboardUsers(props) {
                         <tr className='txt_center'>
                             <th>#</th>
                             <th>DisplayName</th>
-                            <th>User</th>
+                            <th>FullName</th>
+                            <th>UserName</th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Surplus</th>
+                            <th>CreatedAt</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -63,10 +64,12 @@ function DashboardUsers(props) {
                                     <tr key={index} className='txt_center'>
                                         <td>{index + 1}</td>
                                         <td>{user?.displayName}</td>
+                                        <td>{user?.fullName}</td>
                                         <td className='txt_bold'>{user?.userName}</td>
                                         <td>{user?.email}</td>
                                         <td>{user?.phone}</td>
                                         <td>{formatMoney(user?.surplus)}</td>
+                                        <td>{formatDate(user?.createdAt)}</td>
                                         <td>
                                             <ButtonGroup>
                                                 <Button variant='primary'>RePass</Button>

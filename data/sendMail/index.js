@@ -1,27 +1,42 @@
-const axios = require("axios")
+const nodemailer = require('nodemailer');
 
-export const sendMail = async (name, email, subject, message) => {
-    const data = JSON.stringify({
-        "Messages": [{
-            "From": { "Email": "<YOUR EMAIL>", "Name": "<YOUR NAME>" },
-            "To": [{ "Email": email, "Name": name }],
-            "Subject": subject,
-            "TextPart": message
-        }]
-    });
+const { google } = require("googleapis");
 
-    const config = {
-        method: 'post',
-        url: 'https://api.mailjet.com/v3.1/send',
-        data: data,
-        headers: { 'Content-Type': 'application/json' },
-        auth: { username: '<API Key>', password: '<Secret Key>' },
-    };
-    return axios(config)
-        .then((response) => {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-            console.log(error);
+const CLIENT_ID = "506686805602-uqs0s0kehubu4p25nqj54pmee1mufgfd.apps.googleusercontent.com"
+const CLIENT_SECRET = "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"
+const REDIERECT_URI = "https://developers.google.com/oauthplayground"
+const REFRESH_TOKEN = "1//043kUardRa6HyCgYIARAAGAQSNwF-L9IrjPllNuJwAWybYfi8ungV63tk0220IJUnXFFk8FKV1hHu2MX2oNU0_wT26bQEo9jEVgA";
+
+const authen = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIERECT_URI);
+authen.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+export const SendMail = async (to, subject, text) => {
+    try {
+        const accessToken = await authen.getAccessToken();
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                type: "OAuth2",
+                user: "sanghuynh.pt91@gmail.com",
+                clientId: CLIENT_ID,
+                clientSecret: CLIENT_SECRET,
+                refreshToken: REFRESH_TOKEN,
+                accessToken: accessToken
+            }
         });
-}
+
+        const mailOptions = {
+            from: "sanghuynh.pt91@gmail.com",
+            to: to,
+            subject: subject,
+            Text: text,
+            html: "<h1>Hello From API GMAIL</h1>"
+        };
+
+        const result = await transporter.sendMail(mailOptions);
+        return result
+    } catch (error) {
+        return error
+    }
+};
+

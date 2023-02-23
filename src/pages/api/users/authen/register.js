@@ -1,9 +1,23 @@
-import { ControllerClients } from "data/controller/client"
+import { UserControllerAuthen } from "data/controller/user/authens";
+import nextConnect from "next-connect";
 
-export default async function handler(req, res) {
-    if (req.method === "GET") {
-        return res.status(200).json({ mess: "Register user" })
-    } else if (req.method === "POST") {
-        await ControllerClients.Authen.Register(req, res)
-    }
-}
+const apiRoute = nextConnect({
+    onError(error, req, res) {
+        res
+            .status(501)
+            .json({ error: `Sorry something Happened! ${error.message}` });
+    },
+    onNoMatch(req, res) {
+        res.status(405).json({ error: `Method '${req.method}' Not Allowed` });
+    },
+});
+
+apiRoute.post(UserControllerAuthen.Register)
+
+export default apiRoute;
+
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};

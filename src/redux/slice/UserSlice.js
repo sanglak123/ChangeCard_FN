@@ -7,10 +7,15 @@ const UserSlice = createSlice({
         Store: [],
         DataUser: [],
         Products: [],
-        BankOfUsers: []
+        BankOfUsers: [],
+        Payments: [],      
     },
-    reducers: {
-        //Authen
+    reducers: {       
+        //RefreshToken
+        RefreshTokenSuccess: (state, actions) => {
+            state.User.accessToken = actions.payload
+        },
+        //User
         LoginSuccess: (state, actions) => {
             state.User = actions.payload
         },
@@ -18,6 +23,9 @@ const UserSlice = createSlice({
             state.User = [];
             state.Store = [];
             state.DataUser = []
+        },
+        EditProfileSuccess: (state, actions) => {
+            state.User.User = actions.payload
         },
         //Store
         ChooseCardSuccess: (state, actions) => {
@@ -60,7 +68,12 @@ const UserSlice = createSlice({
         LoadingDataUserSuccess: (state, actions) => {
             state.DataUser = actions.payload;
             state.Products = actions.payload.Products;
-            state.BankOfUsers = actions.payload.BankOfUsers
+            state.BankOfUsers = actions.payload.BankOfUsers;
+            state.Payments = actions.payload.Payments;
+        },
+        //BankOfUser
+        AddBankOfUserSuccess: (state, actions) => {
+            state.BankOfUsers.push(actions.payload)
         },
         ChangeCardSuccess: (state, actions) => {
             state.User.User.surplus = Number(state.User.User.surplus) + Number(actions.payload.receiveValue);
@@ -69,12 +82,15 @@ const UserSlice = createSlice({
                 state.Products[index] = actions.payload;
             }
         }
+
     }
 });
-export const {
-    //Authen
+export const {   
+    RefreshTokenSuccess,
+    //User
     LoginSuccess,
     LogoutUserSuccess,
+    EditProfileSuccess,
 
     //Store
     ChooseCardSuccess,
@@ -84,6 +100,7 @@ export const {
     ClearAllStoreSuccess,
     BuyCardSuccess,
     //BankOfUser
+    AddBankOfUserSuccess,
     LoadingDataUserSuccess,
     //DataUser
     DataUserSuccess,

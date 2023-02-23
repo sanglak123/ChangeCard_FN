@@ -41,7 +41,7 @@ function ChangeCardsPage(props) {
                 <UserChangeCard />
                 <TablePrices />
                 {
-                    accessToken &&
+                    accessToken && ProductUser.length > 0 &&
                     <div className='history_change bgr_white mt-2'>
                         <div className='hearder_hag'>
                             <h1>Lịch Sử Đổi Thẻ Cào</h1>

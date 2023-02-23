@@ -1,6 +1,6 @@
 import { formatMoney } from '@/config/formatMoney';
 import { UserSelector } from '@/redux/selector/UserSelector';
-import { EditProfileSuccess } from '@/redux/slice/AdminSlice';
+import { EditProfileSuccess } from '@/redux/slice/UserSlice';
 import { ApiAdmins } from 'data/api/admins';
 import React, { useState } from 'react';
 import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
@@ -36,7 +36,7 @@ function DashboardProfile(props) {
     }
     return (
         <div id='profile'>
-            <div className='profile_content bgr_white'>
+            <div className='profile_content bgr_white mt-2'>
 
                 <div className='profile_avatr'>
                     <div className='hearder_hag'>

@@ -1,6 +1,6 @@
-import nextConnect from "next-connect";
-import multer from "multer";
 import { ControllAdmin } from "data/controller/admin";
+import multer from "multer";
+import nextConnect from "next-connect";
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -8,7 +8,8 @@ const upload = multer({
             return cb(null, "./public/img/avatar")
         },
         filename: (req, file, cb) => {
-            const fileName = file.originalname.toLowerCase().split(' ').join('-');
+            const d = new Date();
+            const fileName = d.getTime().toString() + "_" + file.originalname.toLowerCase().split(' ').join('-');
             cb(null, fileName)
         }
     }),
@@ -29,7 +30,7 @@ apiRoute.get((req, res) => {
     return res.status(200).json({ mess: "Edit Profile Admin" })
 });
 
-apiRoute.use(upload.single("photo")); // attribute name you are sending the file by 
+apiRoute.use(upload.single("photo"));
 
 apiRoute.put(ControllAdmin.Authen.EditProfile);
 
@@ -37,6 +38,6 @@ export default apiRoute;
 
 export const config = {
     api: {
-        bodyParser: false, // Disallow body parsing, consume as stream
+        bodyParser: false,
     },
 };

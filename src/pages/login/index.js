@@ -1,4 +1,5 @@
 import { LoginSuccess } from '@/redux/slice/UserSlice';
+import { CreateAxiosInstance } from 'data/api/axiosClient/createAxiosInstance';
 import { ApiUsers } from 'data/api/users';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -8,7 +9,7 @@ import { useDispatch } from 'react-redux';
 function UserLogin(props) {
     const dispatch = useDispatch();
     const router = useRouter();
-
+    const axiosJwt = CreateAxiosInstance(dispatch, LoginSuccess);
     const [register, setRegister] = useState(false);
     //Data
     const [userName, setUserName] = useState("");

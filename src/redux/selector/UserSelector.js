@@ -5,4 +5,5 @@ export const UserSelector = {
     Store: (state) => state.UserSlice.Store,
     DataUser: (state) => state.UserSlice.DataUser,
     Products: (state) => state.UserSlice.Products,
+    Payments: (state) => state.UserSlice.Payments
 }

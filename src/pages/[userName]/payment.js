@@ -1,17 +1,17 @@
 import ErrorLogin from '@/layout/errorLogin/ErrorLogin';
 import { DataSelector } from '@/redux/selector/DataSelector';
 import { UserSelector } from '@/redux/selector/UserSelector';
-import { LoadingDataUserSuccess } from '@/redux/slice/UserSlice';
+import { AddBankOfUserSuccess, LoadingDataUserSuccess } from '@/redux/slice/UserSlice';
 import { ApiUsers } from 'data/api/users';
+import { UserPaymentsApi } from 'data/api/users/payments';
 import React, { useEffect, useState } from 'react';
 import { Button, ButtonGroup, Container, Form, InputGroup, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 function UserPayments(props) {
     const dispatch = useDispatch();
-    //Data
-    const Data = useSelector(DataSelector.Data);
-    const Banks = Data?.Banks;
+    //Data  
+    const Banks = useSelector(DataSelector.Banks);
     const User = useSelector(UserSelector.User);
 
     const AccessToken = useSelector(UserSelector.AccessToken);
@@ -31,9 +31,11 @@ function UserPayments(props) {
 
     //Add
     const handleAddBankOfUser = async () => {
-        await ApiUsers.BankOfUser.Add(idBank, number, owner, branch, User?.id);
-        await ApiUsers.Data.LoadingDataUser(User?.id, dispatch, LoadingDataUserSuccess);
-
+        await UserPaymentsApi.BankOfUser.Add(idBank, number, owner, branch, User?.id, dispatch, AddBankOfUserSuccess, AccessToken);
+       setIdBank("")
+        setBranch("");
+        setNumber("");
+        setOwner("");
     };
 
     //Edit
@@ -78,10 +80,10 @@ function UserPayments(props) {
                                                 return (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
-                                                        <td>{item.Bank.name}</td>
-                                                        <td>{item.Bank.sign}</td>
+                                                        <td>{item?.Bank?.name}</td>
+                                                        <td>{item?.Bank?.sign}</td>
                                                         {
-                                                            edit === `${item.Bank.id}_${item.owner}` ?
+                                                            edit === `${item?.Bank?.id}_${item?.owner}` ?
                                                                 <>
 
                                                                     <td>
@@ -126,9 +128,9 @@ function UserPayments(props) {
                                                                 </>
                                                                 :
                                                                 <>
-                                                                    <td>{item.number}</td>
-                                                                    <td>{item.owner}</td>
-                                                                    <td>{item.branch}</td>
+                                                                    <td>{item?.number}</td>
+                                                                    <td>{item?.owner}</td>
+                                                                    <td>{item?.branch}</td>
                                                                     <td>
                                                                         <ButtonGroup>
                                                                             <Button onClick={() => {

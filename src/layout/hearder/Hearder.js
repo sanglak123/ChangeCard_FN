@@ -1,5 +1,7 @@
 import { formatMoney } from '@/config/formatMoney';
+import { AdminSelector } from '@/redux/selector/AdminSelector';
 import { UserSelector } from '@/redux/selector/UserSelector';
+import { LogoutAdminSuccess } from '@/redux/slice/AdminSlice';
 import { LogoutUserSuccess } from '@/redux/slice/UserSlice';
 import { ApiUsers } from 'data/api/users';
 import Link from 'next/link';
@@ -10,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import News from '../news';
 
 function Hearder(props) {
+    //LoginAdmin?
+    const LoginAdmin = useSelector(AdminSelector.LoginAdmin);
     const dispatch = useDispatch();
     const router = useRouter();
     const pathname = router.pathname;
@@ -19,11 +23,16 @@ function Hearder(props) {
     const Store = useSelector(UserSelector.Store);
 
     const handleLogout = async () => {
-        await ApiUsers.Authen.Logout(dispatch, LogoutUserSuccess, router);
+        if (User?.admin) {
+            await ApiUsers.Authen.Logout(dispatch, LogoutUserSuccess, router);
+            dispatch(LogoutAdminSuccess())
+        } else {
+            await ApiUsers.Authen.Logout(dispatch, LogoutUserSuccess, router);
+        }
     }
 
     return (
-        pathname !== "/login" && pathname !== "/admin/dashboard" &&
+        pathname !== "/login" && pathname !== "/admin/dashboard" && pathname !== "/admin" &&
         <>
             <div id='hearder'>
                 <div className='container'>
@@ -40,7 +49,7 @@ function Hearder(props) {
                                 <Nav className="me-auto">
                                     <Nav.Link className={route === "/changecard" ? "active me-3" : "me-3"} href="/changecard">Đổi Thẻ</Nav.Link>
                                     <Nav.Link className={route === "/buycard/[telco]" ? "active me-3" : "me-3"} href="/buycard/viettel">Mua Thẻ</Nav.Link>
-                                    <Nav.Link className={route === "/[userName]/topup" ? "active me-3" : "me-3"} href={`/${User?.userName}/topup`}>Nạp Tiền</Nav.Link>
+                                    <Nav.Link className={route === "/[userName]/refill" ? "active me-3" : "me-3"} href={`/${User?.userName}/refill`}>Nạp Tiền</Nav.Link>
                                     <Nav.Link className={route === "/[userName]/withdraw" ? "active me-3" : "me-3"} href={`/${User?.userName}/withdraw`}>Rút Tiền</Nav.Link>
                                     <Nav.Link className={route === "/connectapi" ? "active me-3" : "me-3"} href="/connectapi">Kết Nối Api</Nav.Link>
                                     <Nav.Link className={route === "/usemanual" ? "active me-3" : "me-3"} href="/usemanual">Hướng Dẫn</Nav.Link>
@@ -51,7 +60,7 @@ function Hearder(props) {
                                             <>
                                                 <Nav.Link disabled className='nav_surlpus'><i className="fa fa-user"></i></Nav.Link>
 
-                                                <NavDropdown title={User.displayName ? User?.displayName : User?.userName} id="basic-nav-dropdown">
+                                                <NavDropdown title={User?.displayName ? User?.displayName : User?.userName} id="basic-nav-dropdown">
                                                     <NavDropdown.Item href={`/${User?.userName}/profile`}><i className="fa fa-user-cog me-2"></i>Thông tin tài khoản</NavDropdown.Item>
 
                                                     <NavDropdown.Item href={`/${User?.userName}/payment`}><i className="fa fa-donate me-2"></i>Quỹ số dư</NavDropdown.Item>
@@ -62,7 +71,12 @@ function Hearder(props) {
                                                     <NavDropdown.Item href={`/${User?.userName}/payment`}><i className="fa fa-audio-description me-2"></i>Lịch sữ mua thẻ cào</NavDropdown.Item>
                                                     <NavDropdown.Divider />
                                                     <NavDropdown.Item href={`/${User?.userName}/payment`}><i className="fa fa-project-diagram me-2"></i>Kết nối Api</NavDropdown.Item>
+                                                    {
+                                                        User?.admin &&
+                                                        <NavDropdown.Item href={LoginAdmin ? "/admin/dashboard" : "/admin/auth/login"}><i className="fa fa-grip-horizontal me-2"></i>Dashboard</NavDropdown.Item>
+                                                    }
                                                     <NavDropdown.Item onClick={() => handleLogout()}><i className="fa fa-sign-out-alt me-2"></i>Logout</NavDropdown.Item>
+
                                                 </NavDropdown>
                                                 <Nav.Link disabled className='nav_surlpus'>
                                                     <i className="fa fa-donate me-2"></i>

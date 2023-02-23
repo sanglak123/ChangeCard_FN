@@ -23,6 +23,16 @@ module.exports = {
           key: "id"
         }
       },
+      idReceiveBank: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "ReceiveBanks",
+          key: "id"
+        }
+      },
+      amount: {
+        type: Sequelize.STRING
+      },
       img: {
         type: Sequelize.INTEGER,
         references: {
@@ -31,6 +41,9 @@ module.exports = {
         }
       },
       command: {
+        type: Sequelize.STRING
+      },
+      status: {
         type: Sequelize.STRING
       },
       createdAt: {

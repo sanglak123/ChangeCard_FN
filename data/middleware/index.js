@@ -1,40 +1,42 @@
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv").config();
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
-const CheckAdmin = (req, res, next) => {
-    try {
-        const { accesstoken } = req.headers;
+dotenv.config();
+
+export const CheckAdmin = (req, res, next) => {
+    const { token } = req.headers;
+    if (token) {
+        const accesstoken = token.split(" ")[1];
         jwt.verify(accesstoken, process.env.ACCESS_TOKEN_KEY, async (err, user) => {
             if (err) {
-                return res.status(403).json({ error: "Not logged in!" })
+                return res.status(403).json({ error: "Token không hợp lệ!" })
             } else {
-                if (user.admin === true) {
+                if (user.admin) {
                     next();
                 } else {
-                    return res.status(403).json({ error: "no access to information!" })
+                    return res.status(401).json({ error: "Không có quyền truy câp!" })
                 }
+
             }
         })
-    } catch (error) {
-        res.status(500).send(error);
+    } else {
+        return res.status(401).json({ error: "Bạn chưa đăng nhập!" })
     }
 }
 
-const CheckLogin = (req, res, next) => {
-    try {
-        const { accesstoken } = req.headers;
+export const CheckLogin = (req, res, next) => {
+    const { token } = req.headers;
+    if (token) {
+        const accesstoken = token.split(" ")[1];
         jwt.verify(accesstoken, process.env.ACCESS_TOKEN_KEY, async (err, user) => {
             if (err) {
-                return res.status(403).json({ error: "Not logged in!" })
+                return res.status(403).json({ error: "Token không hợp lệ!" })
             } else {
+                req.user = user;
                 next();
             }
         })
-    } catch (error) {
-        res.status(500).send(error);
+    } else {
+        return res.status(401).json({ error: "Bạn chưa đăng nhập!" })
     }
 };
-
-module.exports = {
-    CheckAdmin, CheckLogin
-}

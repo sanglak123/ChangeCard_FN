@@ -10,26 +10,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { toast } from 'react-toastify';
+import { ApiCardsPublic } from 'data/api/cardsPublic';
 
 function BuyCardsUser(props) {
+    //User
+    const User = useSelector(UserSelector.User);
+    const accesstoken = useSelector(UserSelector.AccessToken);
+
     const dispatch = useDispatch();
     const router = useRouter()
     const { telco } = router.query;
 
-    const Data = useSelector(DataSelector.Data);
-    const Cards = Data?.Cards;
+     const Cards = useSelector(DataSelector.Cards);
     const PhoneCards = Cards?.filter(item => item.idTypeCard === 1);
     const GameCards = Cards?.filter(item => item.idTypeCard === 2);
 
     //Store
     const Store = useSelector(UserSelector.Store)
 
-    const Prices = Data?.Prices;
+    const Prices = useSelector(DataSelector.Prices);
     const [PriceRenders, setPriceRenders] = useState([]);
     useEffect(() => {
         const list = Prices?.filter(item => item.Card?.telco === telco?.toUpperCase());
         setPriceRenders(list)
-    }, [Data, telco]);
+    }, [telco]);
 
 
     const handleChooseCard = (price) => {
@@ -48,7 +52,7 @@ function BuyCardsUser(props) {
 
     const handleAddCard = (price) => {
         dispatch(AddCardSuccess(price));
-    
+
     };
 
     const handleSubtractionCard = (price) => {
@@ -78,6 +82,12 @@ function BuyCardsUser(props) {
             return "success"
         }
 
+    };
+
+    //BuyCard 
+    const [email, setEmail] = useState("");
+    const handleBuyCard = async () => {
+        await ApiCardsPublic.BuyCarrd(User?.id, Store, email, accesstoken)
     };
 
     return (
@@ -195,8 +205,8 @@ function BuyCardsUser(props) {
                                             {
                                                 Store.map((item, index) => {
                                                     return (
-                                                        <>
-                                                            <div key={index} className='store_item d-flex justify-content-between align-items-center'>
+                                                        <div key={index}>
+                                                            <div className='store_item d-flex justify-content-between align-items-center'>
                                                                 <div>
                                                                     <p className='m-0 p-0'>{item.telco} - {formatMoney(item.value)}</p>
                                                                     <p className='m-0 p-0'>Chiết khấu: {item.feesBuy}%</p>
@@ -214,35 +224,39 @@ function BuyCardsUser(props) {
                                                                 </div>
                                                             </div>
                                                             <hr />
-                                                        </>
+                                                        </div>
 
                                                     )
                                                 })
                                             }
                                         </div>
-                                        <div className='store_total'>
-                                            <h4>Tổng Cộng: {formatMoney(totalPrice)}</h4>
+                                        <div className='store_total txt_right'>
+                                            <h4>Tổng Cộng: <span className='txt_bold text-danger'>{formatMoney(totalPrice)}</span></h4>
                                         </div>
                                         <hr />
                                         <div className='store_receive'>
                                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                                 <Form.Label>Email nhận thẻ</Form.Label>
-                                                <Form.Control type="email" placeholder="Enter email" />
-                                                <Form.Text className="text-muted">
+                                                <Form.Control
+                                                    type="email"
+                                                    placeholder="Enter email"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                />
+                                                <Form.Text className="text-danger">
                                                     Email của bạn sẻ được bảo mật.
                                                 </Form.Text>
                                             </Form.Group>
                                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                                 <Form.Label>Phương thức thanh toán</Form.Label>
-                                                <Form.Control type="email" placeholder="Enter email" />
-                                                <Form.Text className="text-muted">
-                                                    Email của bạn sẻ được bảo mật.
-                                                </Form.Text>
+                                                <Form.Select>
+                                                    <option value={"wallet"}>Ví điện tử - {formatMoney(User?.surplus)}</option>
+                                                </Form.Select>
                                             </Form.Group>
                                         </div>
                                         <hr />
                                         <div className='btn_payment'>
-                                            <Button variant='success' className='w-100 p-3 txt_bold'>Thanh toán</Button>
+                                            <Button onClick={handleBuyCard} variant='success' className='w-100 p-3 txt_bold'>Thanh toán</Button>
                                         </div>
                                     </>
                                     :

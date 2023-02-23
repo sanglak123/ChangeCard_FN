@@ -1,6 +1,4 @@
-import { ControllCardPublic } from "data/controller/cards";
-import { ControllerClients } from "data/controller/client";
-import { CheckLogin } from "data/middleware";
+import { UserControllerDatas } from "data/controller/user/data";
 import nextConnect from "next-connect";
 
 const apiRoute = nextConnect({
@@ -14,7 +12,7 @@ const apiRoute = nextConnect({
     },
 });
 
-apiRoute.get(ControllerClients.Data.LoadDingDataUser);
+apiRoute.get(UserControllerDatas.LoadDingDataUser);
 
 export default apiRoute;
 

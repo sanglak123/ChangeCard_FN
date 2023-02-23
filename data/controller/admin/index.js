@@ -13,70 +13,33 @@ const { CreateAccessToken, CreateRefreshToken } = require("data/token");
 const ControllAdmin = {
     Authen: {
         Login: async (req, res) => {
-            const { userName, pass, key } = req.body;
+            const { pass2, key } = req.body;
+            const { id } = req.query;
             try {
                 const admin = await Users.findOne({
                     where: {
-                        [Op.and]: [
-                            { userName: userName },
-                            { admin: true }
-                        ]
-                    },
-                    include: [{ model: Imgs }]
+                        id: id
+                    }
                 });
                 if (admin) {
-                    if (bycrys.compareSync(pass, admin.pass)) {
+                    if (bycrys.compareSync(pass2, admin.pass2)) {
                         if (key === process.env.KEY_ADMIN) {
-                            const newAccessToken = CreateAccessToken(admin);
-                            const newRefreshToken = CreateRefreshToken(admin);
-
-                            const oldRefreshToken = await RefreshTokens.findOne({
-                                where: {
-                                    idUser: admin.id
-                                }
-                            });
-                            if (oldRefreshToken) {
-                                oldRefreshToken.refreshToken = newRefreshToken;
-                                await oldRefreshToken.save();
-                                res.cookie("refreshToken", newRefreshToken, {
-                                    httpOnly: true,
-                                    secure: true,
-                                    path: "/",
-                                    sameSite: "strict",
-                                    maxAge: 60 * 1000 * 60 * 24
-                                });
-                                admin.pass = null;
-                                return res.status(200).json({ Admin: admin, accessToken: newAccessToken, mess: "Login success" });
-                            } else {
-                                await RefreshTokens.create({
-                                    idUser: admin.id,
-                                    refreshToken: newRefreshToken
-                                });
-                                res.cookie("refreshToken", newRefreshToken, {
-                                    httpOnly: true,
-                                    secure: true,
-                                    path: "/",
-                                    sameSite: "strict",
-                                    maxAge: 60 * 1000 * 60 * 24
-                                });
-                                admin.pass = null;
-                                return res.status(200).json({ Admin: admin, accessToken: newAccessToken, mess: "Login success" });
-                            }
+                            return res.status(200).json({ mess: "Đăng nhập thành công!", LoginAdmin: true });
                         } else {
-                            return res.status(400).json({ error: "KEY_ADMIN wrong!" })
+                            return res.status(400).json({ error: "KEY_ADMIN wrong!" });
                         }
                     } else {
-                        return res.status(400).json({ error: "Pasword wrong!" })
+                        return res.status(400).json({ error: "Password 2 wrong!" });
                     }
                 } else {
-                    return res.status(403).json({ error: "You are not Admin!" })
+                    return res.status(403).json({ error: "You are not Admin!" });
                 }
             } catch (error) {
                 return res.status(500).json(error);
             }
         },
         Register: async (req, res) => {
-            const { userName, pass, phone, email, key } = req.body;
+            const { userName, displayName, fullName, adress, pass, pass2, email, phone, key } = req.body;
             try {
                 if (key === process.env.KEY_ADMIN) {
                     const oldAdmin = await Users.findOne({
@@ -88,10 +51,16 @@ const ControllAdmin = {
                         return res.status(400).json({ error: "Username already exits!" });
                     } else {
                         const salt = bycrys.genSaltSync(15);
+                        const salt2 = bycrys.genSaltSync(17);
                         const newPass = bycrys.hashSync(pass, salt);
+                        const newPass2 = bycrys.hashSync(pass2, salt2);
                         await Users.create({
                             userName: userName,
+                            displayName: displayName,
+                            fullName: fullName,
+                            adress: adress,
                             pass: newPass,
+                            pass2: newPass2,
                             email: email,
                             phone: phone,
                             admin: true
@@ -105,34 +74,25 @@ const ControllAdmin = {
                 return res.status(500).json(error);
             }
         },
-        Logout: async (req, res) => {
-            try {
-                res.clearCookie("refreshToken");
-                return res.end();
-            } catch (error) {
-
-                return res.status(500).json(error);
-            }
-        },
         EditProfile: async (req, res) => {
             const { id } = req.query;
             const { displayName, fullName, phone, adress, email } = req.body;
 
-            const baseURL = req.protocol + '://' + req.get('host');
-            const pathImage = baseURL + '/img/avatar/' + req.file.filename;
             try {
-                const oldAdmin = await Users.findOne({
+                const admin = await Users.findOne({
                     where: {
                         id: id
                     },
                     include: [{ model: Imgs }]
                 });
-                if (oldAdmin) {
+                if (admin) {
 
                     if (req.file) {
+                        const baseURL = req.protocol + '://' + req.get('host');
+                        const pathImage = baseURL + '/img/avatar/' + req.file.filename;
                         const oldAvatar = await Imgs.findOne({
                             where: {
-                                id: oldAdmin.avatar
+                                id: admin.avatar
                             }
                         });
                         if (oldAvatar) {
@@ -145,13 +105,13 @@ const ControllAdmin = {
                                     oldAvatar.fileName = req.file.filename;
                                     await oldAvatar.save();
 
-                                    oldAdmin.displayName = displayName;
-                                    oldAdmin.fullName = fullName;
-                                    oldAdmin.phone = phone;
-                                    oldAdmin.adress = adress;
-                                    oldAdmin.avatar = oldAvatar.id;
-                                    oldAdmin.email = email
-                                    await oldAdmin.save();
+                                    admin.displayName = displayName;
+                                    admin.fullName = fullName;
+                                    admin.phone = phone;
+                                    admin.adress = adress;
+                                    admin.avatar = oldAvatar.id;
+                                    admin.email = email
+                                    await admin.save();
 
                                     const adminResult = await Users.findOne({
                                         where: {
@@ -160,7 +120,8 @@ const ControllAdmin = {
                                         include: [{ model: Imgs }]
                                     });
                                     adminResult.pass = null;
-                                    return res.status(200).json({ mess: "Update success!", Admin: adminResult })
+                                    adminResult.pass2 = null;
+                                    return res.status(200).json({ mess: "Update success!", User: adminResult })
                                 }
                             })
                         } else {
@@ -169,13 +130,13 @@ const ControllAdmin = {
                                 path: pathImage
                             });
 
-                            oldAdmin.displayName = displayName;
-                            oldAdmin.fullName = fullName;
-                            oldAdmin.phone = phone;
-                            oldAdmin.adress = adress;
-                            oldAdmin.avatar = Avatar.id;
-                            oldAdmin.email = email
-                            await oldAdmin.save();
+                            admin.displayName = displayName;
+                            admin.fullName = fullName;
+                            admin.phone = phone;
+                            admin.adress = adress;
+                            admin.avatar = Avatar.id;
+                            admin.email = email
+                            await admin.save();
 
                             const adminResult = await Users.findOne({
                                 where: {
@@ -184,18 +145,17 @@ const ControllAdmin = {
                                 include: [{ model: Imgs }]
                             });
                             adminResult.pass = null;
-                            return res.status(200).json({ mess: "Update success!", Admin: adminResult })
+                            adminResult.pass2 = null;
+                            return res.status(200).json({ mess: "Update success!", User: adminResult })
                         }
 
                     } else {
-                        oldAdmin.displayName = displayName;
-                        oldAdmin.fullName = fullName;
-                        oldAdmin.phone = phone;
-                        oldAdmin.adress = adress;
-                        oldAdmin.avatar = newImg.id;
-                        oldAdmin.email = email
-                        await oldAdmin.save();
-
+                        admin.displayName = displayName;
+                        admin.fullName = fullName;
+                        admin.phone = phone;
+                        admin.adress = adress;
+                        admin.email = email
+                        await admin.save();
                         const adminResult = await Users.findOne({
                             where: {
                                 id: id
@@ -203,7 +163,8 @@ const ControllAdmin = {
                             include: [{ model: Imgs }]
                         });
                         adminResult.pass = null;
-                        return res.status(200).json({ mess: "Update success!", Admin: adminResult })
+                        adminResult.pass2 = null;
+                        return res.status(200).json({ mess: "Update success!", User: adminResult })
                     }
                 } else {
                     return res.status(404).json({ error: "Admin not found!" })
@@ -220,8 +181,7 @@ const ControllAdmin = {
                     method: "GET",
                     url: "https://doithe1s.vn/chargingws/v2/getfee?partner_id=6155991561"
                 }).then(async (responsive) => {
-                    const listCard = await Cards.findAll();
-                    const listPrice = await Prices.findAll();
+
                     const data = responsive.data;
                     for (let index = 0; index < data.length; index++) {
                         const telcoData = data[index].telco;
@@ -258,7 +218,13 @@ const ControllAdmin = {
                             });
                         }
                     };
-                    return res.status(200).json({ Data: responsive.data, Cards: listCard, Prices: listPrice, mess: "Update success!" })
+                    const listPrice = await Prices.findAll({
+                        include: [
+                            { model: Cards },
+                            { model: Values }
+                        ]
+                    });
+                    return res.status(200).json({ Prices: listPrice, mess: "Update success!" })
                 }).catch((err) => {
                     return res.status(500).json(err);
                 })
@@ -443,7 +409,11 @@ const ControllAdmin = {
                     include: [{ model: Users }, { model: Prices, include: [{ model: Cards }, { model: Values }] }]
                 });
 
-                return res.status(200).json({ Users: listUsers, ChangeCards: listChangeCards, BuyCards: listBuyCards })
+                return res.status(200).json({
+                    Users: listUsers,
+                    ChangeCards: listChangeCards,
+                    BuyCards: listBuyCards
+                })
             } catch (error) {
                 return res.status(500).json(err);
             }

@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux';
 import { DataSelector } from '@/redux/selector/DataSelector';
 import { Card } from 'react-bootstrap';
 import { formatMoney } from '@/config/formatMoney';
+import { UserSelector } from '@/redux/selector/UserSelector';
 
 function CardsHot(props) {
-    //Data
-    const Data = useSelector(DataSelector.Data);
-    const Prices = Data?.Prices;
+    //Data   
+    const Prices = useSelector(DataSelector.Prices);
 
     const settings = {
         dots: false,
@@ -74,10 +74,10 @@ function CardsHot(props) {
                                 return (
                                     <div key={index} className='card_hot_items'>
                                         <div className='item_img'>
-                                            <img src={item.Card.Img.path} alt={item.Card.telco} className='img-fluid' />
+                                            <img src={item.Card?.Img?.path} alt={item.Card?.telco} className='img-fluid' />
                                         </div>
                                         <div className='item_title'>
-                                            <h6>{formatMoney(item.Value.name)}</h6>
+                                            <h6>{formatMoney(item.Value?.name)}</h6>
                                         </div>
                                         <div className='item_fees'>
                                             {

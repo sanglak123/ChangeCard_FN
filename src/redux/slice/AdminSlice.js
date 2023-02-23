@@ -3,30 +3,38 @@ import { createSlice } from "@reduxjs/toolkit";
 const AdminDataSlice = createSlice({
     name: "admin",
     initialState: {
-        Admin: [],
-        Data: []
+        Data: [],
+        Users: [],
+        ChangeCards: [],
+        BuyCards: [],
+        LoginAdmin: false
+
     },
     reducers: {
+        // LoginAdmin
         LoginAdminSuccess: (state, actions) => {
-            state.Admin = actions.payload
+            state.LoginAdmin = actions.payload
         },
-        LogoutAdminSuccess: (state, actions) => {
-            state.Admin = []
-        },
-        EditProfileSuccess: (state, actions) => {
-            state.Admin.Admin = actions.payload;
+        //Admin logout
+        LogoutAdminSuccess: (state) => {
+            state.LoginAdmin = false;
+            state.Data = [];
+            state.Users = [];
+            state.BuyCards = [];
+            state.ChangeCards = [];
         },
         //Data Admin
         LoadingDataAdminSuccess: (state, actions) => {
-            state.Data = actions.payload
+            state.Users = actions.payload.Users;
+            state.ChangeCards = actions.payload.ChangeCards;
+            state.BuyCards = actions.payload.BuyCards
         }
     }
 });
 export const {
+    LoadingDataAdminSuccess,
     LoginAdminSuccess,
-    LogoutAdminSuccess,
-    EditProfileSuccess,
-    LoadingDataAdminSuccess
+    LogoutAdminSuccess
 
 } = AdminDataSlice.actions;
 

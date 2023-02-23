@@ -1,6 +1,7 @@
 import nextConnect from "next-connect";
 import multer from "multer";
 import { ControllAdmin } from "data/controller/admin";
+import { AdminControllerCards } from "data/controller/admin/cards";
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -28,7 +29,9 @@ const apiRoute = nextConnect({
 apiRoute.get((req, res) => {
     return res.status(200).json({ mess: "Edit Profile Admin" })
 });
-apiRoute.delete(ControllAdmin.Cards.Delete)
+apiRoute.post(AdminControllerCards.OnOffChangeCard);
+
+apiRoute.delete(ControllAdmin.Cards.Delete);
 
 apiRoute.use(upload.single("photo"));
 

@@ -9,15 +9,15 @@ import { useDispatch, useSelector } from 'react-redux';
 
 function TableCardsRender({ telco }) {
     const dispatch = useDispatch();
-    //Data
-    const Data = useSelector(DataSelector.Data);
-    const Prices = Data?.Prices;
+    //Data  
+    const Prices = useSelector(DataSelector.Prices);
     const [PriceRender, setPriceRender] = useState([]);
 
     useEffect(() => {
-        const list = Prices.filter(item => item?.Card?.telco === telco);
+        const list = Prices?.filter(item => item?.Card?.telco === telco);
         setPriceRender(list)
-    }, [Data, telco])
+    }, [Prices, telco]);
+   
     //Edit
     const [edit, setEdit] = useState("");
     const [feesBuy, setFeesBuy] = useState("");

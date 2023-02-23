@@ -6,8 +6,7 @@ import { useSelector } from 'react-redux';
 
 function BuyCards(props) {
     //Data
-    const Data = useSelector(AdminSelector.Data);
-    const BuyCards = Data?.BuyCards;
+    const BuyCards = useSelector(AdminSelector.Data.BuyCards);
 
     const [total, setTotal] = useState({
         change: 0,
@@ -20,8 +19,8 @@ function BuyCards(props) {
         let b = 0;
         let c = 0;
         for (let index = 0; index < BuyCards.length; index++) {
-            a += Number(BuyCards[index].Price.Value.name);
-            b += Number(BuyCards[index].Price.Value.name) - (Number(BuyCards[index].Price.Value.name) * Number(BuyCards[index].Price.feesChange) / 100);
+            a += Number(BuyCards[index].Price?.Value?.name);
+            b += Number(BuyCards[index].Price?.Value?.name) - (Number(BuyCards[index].Price?.Value?.name) * Number(BuyCards[index].Price?.feesChange) / 100);
             c = (a - b);
         };
         setTotal({
@@ -29,11 +28,11 @@ function BuyCards(props) {
             receive: b,
             freeMoney: c
         })
-    }, [Data])
+    }, [BuyCards])
 
     return (
         <div id='change_card'>
-            <div className='change_card_content layot_wrapter'>
+            <div className='change_card_content bgr_white mt-2'>
                 <div className='hearder_hag'>
                     <h1>BuyCards</h1>
                 </div>
@@ -43,38 +42,42 @@ function BuyCards(props) {
                         <p>Total Receive : {formatMoney(total.receive)}</p>
                         <p>Total Free Money : {formatMoney(total.freeMoney)}</p>
                     </div>
-                    <Table bordered size="sm">
-                        <thead>
-                            <tr className='txt_white txt_center'>
-                                <th>#</th>
-                                <th>Telco</th>
-                                <th>Value</th>
-                                <th>FeesChange</th>
-                                <th>Receive</th>
-                                <th>Status</th>
-                                <th>CreateAt</th>
-                                <th>User</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                BuyCards?.map((item, index) => {
-                                    return (
-                                        <tr key={index} className='txt_white txt_center'>
-                                            <td>{index + 1}</td>
-                                            <td>{item.Price.Card.telco}</td>
-                                            <td>{formatMoney(item.Price.Value.name)}</td>
-                                            <td>{item.Price.feesChange} %</td>
-                                            <td>{formatMoney(Number(item.Price.Value.name) - (Number(item.Price.Value.name) * Number(item.Price.feesChange) / 100))}</td>
-                                            <td>Success</td>
-                                            <td>{item.createdAt}</td>
-                                            <td>{item.User.userName}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </Table>
+                    {
+                        BuyCards.length > 0 &&
+                        <Table bordered size="sm">
+                            <thead>
+                                <tr className='txt_center'>
+                                    <th>#</th>
+                                    <th>Telco</th>
+                                    <th>Value</th>
+                                    <th>FeesChange</th>
+                                    <th>Receive</th>
+                                    <th>Status</th>
+                                    <th>CreateAt</th>
+                                    <th>User</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    BuyCards?.map((item, index) => {
+                                        return (
+                                            <tr key={index} className='txt_center'>
+                                                <td>{index + 1}</td>
+                                                <td>{item.Price?.Card?.telco}</td>
+                                                <td>{formatMoney(item.Price?.Value?.name)}</td>
+                                                <td>{item.Price?.feesChange} %</td>
+                                                <td>{formatMoney(Number(item.Price?.Value?.name) - (Number(item.Price?.Value?.name) * Number(item.Price?.feesChange) / 100))}</td>
+                                                <td>Success</td>
+                                                <td>{item.createdAt}</td>
+                                                <td>{item.User?.userName}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </Table>
+                    }
+
                 </div>
             </div>
         </div>

@@ -13,46 +13,41 @@ module.exports = {
         telco: "VINAPHONE",
         idTypeCard: 1,
         img: 2
-      },
+      },     
       {
-        telco: "VINAPHONE",
+        telco: "MOBIFONE",
         idTypeCard: 1,
         img: 3
       },
       {
-        telco: "MOBIFONE",
+        telco: "VNMOBI",
         idTypeCard: 1,
         img: 4
       },
       {
-        telco: "VNMOBI",
-        idTypeCard: 1,
-        img: 5
-      },
-      {
         telco: "ZING",
         idTypeCard: 2,
-        img: 6
+        img: 5
       },
       {
         telco: "GARENA",
         idTypeCard: 2,
-        img: 7
+        img: 6
       },
       {
         telco: "GATE",
         idTypeCard: 2,
-        img: 8
+        img: 7
       },
       {
         telco: "VCOIN",
         idTypeCard: 2,
-        img: 9
+        img: 8
       },
       {
         telco: "APPOTA",
         idTypeCard: 2,
-        img: 10
+        img: 9
       },
       {
         telco: "ANPAY",
@@ -65,26 +60,32 @@ module.exports = {
       },
       {
         telco: "BITVN",
+        img: 13,
         idTypeCard: 2
       },
       {
         telco: "CAROT",
+        img: 14,
         idTypeCard: 2
       },
       {
         telco: "FUNCARD",
+        img: 15,
         idTypeCard: 2
       },
       {
         telco: "GMOBILE",
+        img: 16,
         idTypeCard: 2
       },
       {
         telco: "GOSU",
+        img: 17,
         idTypeCard: 2
       },
       {
         telco: "KASPERKY",
+        img: 18,
         idTypeCard: 2
       },
       {
@@ -92,23 +93,23 @@ module.exports = {
         idTypeCard: 2
       },
       {
-        telco: "KUL",
+        telco: "KUL",   
         idTypeCard: 2
       },
       {
-        telco: "ONCASH",
+        telco: "ONCASH",     
         idTypeCard: 2
       },
       {
-        telco: "SCOIN",
+        telco: "SCOIN", 
         idTypeCard: 2
       },
       {
-        telco: "SOHACOIN",
+        telco: "SOHACOIN",      
         idTypeCard: 2
       },
       {
-        telco: "VEGA",
+        telco: "VEGA",   
         idTypeCard: 2
       },
     ], {});

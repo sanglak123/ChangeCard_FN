@@ -3,22 +3,23 @@ import Note from "@/layout/note/Note";
 import { DataSelector } from "@/redux/selector/DataSelector";
 import { UserSelector } from "@/redux/selector/UserSelector";
 import { ChangeCardSuccess, LoadingDataUserSuccess } from "@/redux/slice/UserSlice";
+import { CreateAxiosInstance } from "data/api/axiosClient/createAxiosInstance";
 import { ApiCardsPublic } from "data/api/cardsPublic";
 import { ApiUsers } from "data/api/users";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 function UserChangeCard(props) {
-    const dispatch = useDispatch();
-    //Data
-    const Data = useSelector(DataSelector.Data);
-    const Cards = Data?.Cards;
-    const Prices = Data?.Prices;
+    const dispatch = useDispatch();   
+    //Data   
+    const Cards = useSelector(DataSelector.Cards);  
+    const Values = useSelector(DataSelector.Values);
     //User
     const User = useSelector(UserSelector.User);
     const accessToken = useSelector(UserSelector.AccessToken);
+    const axiosJwt = CreateAxiosInstance(dispatch, accessToken);
 
     const listCardsChange = Cards?.filter(item => item.change === true);
 
@@ -28,18 +29,10 @@ function UserChangeCard(props) {
     const [serial, setSerial] = useState("");
     const [idValue, setIdValue] = useState(1);
 
-    const [listValueRender, setListValueRenders] = useState([]);
-
-    useEffect(() => {
-        const list = Prices?.filter(item => item.Card.telco === telco);
-        setListValueRenders(list)
-    }, [telco]);
-
-
     const handleChangeCard = async () => {
         if (code.length > 10 && serial.length > 10) {
             const idToast = toast.loading("Đang gửi thẻ...")
-            await ApiCardsPublic.PostCards(telco, idValue, code, serial, User?.id, accessToken, dispatch, LoadingDataUserSuccess, ChangeCardSuccess, idToast);
+            await ApiCardsPublic.PostCards(telco, idValue, code, serial, User?.id, accessToken, dispatch, ChangeCardSuccess, idToast, axiosJwt);
             await ApiUsers.Data.LoadingDataUser(User?.id, dispatch, LoadingDataUserSuccess);
             setCode("");
             setSerial("");
@@ -101,9 +94,9 @@ function UserChangeCard(props) {
                     <div className='serial_card'>
                         <Form.Select onChange={(e) => setIdValue(e.target.value)}>
                             {
-                                listValueRender?.map((item, index) => {
+                                Values?.map((item, index) => {
                                     return (
-                                        <option key={index} value={item.Value?.id}>{formatMoney(item.Value.name)}</option>
+                                        <option key={index} value={item.id}>{formatMoney(item.name)}</option>
                                     )
                                 })
                             }

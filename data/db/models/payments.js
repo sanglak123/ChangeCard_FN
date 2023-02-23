@@ -12,15 +12,22 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Users, { foreignKey: "idUser" });
+
       this.belongsTo(models.BankOfUsers, { foreignKey: "idbankOfUser" });
+
+      this.belongsTo(models.ReceiveBanks, { foreignKey: "idReceiveBank" });
+      
       this.belongsTo(models.Imgs, { foreignKey: "img" })
     }
   }
   Payments.init({
     idUser: DataTypes.INTEGER,
     idbankOfUser: DataTypes.INTEGER,
+    idReceiveBank: DataTypes.INTEGER,
+    amount: DataTypes.STRING,
     img: DataTypes.INTEGER,
-    command: DataTypes.STRING
+    command: DataTypes.STRING,
+    status: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Payments',

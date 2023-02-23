@@ -5,39 +5,42 @@ import { DataSelector } from '@/redux/selector/DataSelector';
 import { UserSelector } from '@/redux/selector/UserSelector';
 import { LoadingDataSuccess } from '@/redux/slice/DataSlice';
 import { LoadingDataUserSuccess } from '@/redux/slice/UserSlice';
+import { CreateAxiosInstance } from 'data/api/axiosClient/createAxiosInstance';
 import { ApiUsers } from 'data/api/users';
+import { UserDataApi } from 'data/api/users/data';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 function ChangeCard(props) {
   const dispatch = useDispatch();
-
-  //Data
-  const Data = useSelector(DataSelector.Data);
-  const Cards = Data?.Cards;
   //User
   const User = useSelector(UserSelector.User);
   const accessToken = useSelector(UserSelector.AccessToken);
+  //AxoisJwt
+  const axiosJwt = CreateAxiosInstance(dispatch, accessToken);
 
-
+  //LoadingDataPublic
   useEffect(() => {
     const LoadingData = async () => {
-      await ApiUsers.Data.LoadingData(dispatch, LoadingDataSuccess)
+      await UserDataApi.LoadingData(dispatch, LoadingDataSuccess)
     };
     LoadingData()
   }, []);
+
   //DataUser
   useEffect(() => {
     const GetDataUser = async () => {
       if (User && accessToken) {
-        await ApiUsers.Data.LoadingDataUser(User?.id, dispatch, LoadingDataUserSuccess)
+        await ApiUsers.Data.LoadingDataUser(User?.id, dispatch, LoadingDataUserSuccess, axiosJwt, accessToken)
       }
     };
     GetDataUser();
   }, [User, accessToken])
 
+  //Data  
+  const Cards = useSelector(DataSelector.Cards);
 
   return (
     <div id='home_page'>

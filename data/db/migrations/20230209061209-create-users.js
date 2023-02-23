@@ -24,6 +24,9 @@ module.exports = {
       pass: {
         type: Sequelize.STRING
       },
+      pass2: {
+        type: Sequelize.STRING
+      },
       email: {
         type: Sequelize.STRING
       },
@@ -44,6 +47,9 @@ module.exports = {
       admin: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
+      },
+      wallet_number: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

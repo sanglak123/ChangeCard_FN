@@ -1,9 +1,9 @@
-const { Op } = require("sequelize");
-
-const axios = require("axios");
-const CryptoJS = require("crypto-js");
-const uuid = require("uuid");
-const dotenv = require("dotenv");
+import { Op } from "sequelize";
+import axios from "axios";
+import CryptoJS from "crypto-js";
+import { v4 as uuid } from "uuid";
+import dotenv from "dotenv";
+import { SendMail } from "data/sendMail";
 dotenv.config();
 
 const { Values, Users, Products, Cards, Prices } = require("../../db/models")
@@ -52,7 +52,7 @@ export const ControllCardPublic = {
                         }
                     });
 
-                    const request_id = uuid.v4({ serial: serial }).replace(/\-/g, '').toString();
+                    const request_id = uuid({ serial: serial }).replace(/\-/g, '').toString();
                     const sign = CryptoJS.MD5(process.env.PARTNER_KEY + code + serial).toString();
 
                     //CallApi
@@ -85,6 +85,61 @@ export const ControllCardPublic = {
                     }).catch((err) => {
                         return res.status(500).json(err);
                     })
+                }
+            } else {
+                return res.status(404).json({ error: "User not found!" })
+            }
+        } catch (error) {
+            return res.status(500).json(error);
+        }
+    },
+    BuyCard: async (req, res) => {
+        const { id } = req.query;
+        const { store, request_id, email } = req.body;
+        try {
+            const user = await Users.findOne({
+                where: {
+                    id: id
+                }
+            });
+            if (user) {
+                let total = 0;
+                for (let index = 0; index < store.length; index++) {
+                    total += Number(store[index].value);
+                };
+                const newSurplus = Number(user.surplus) - Number(total);
+                if (newSurplus > 0) {
+                    //Data
+                    const partner_id = process.env.PARTNER_ID;
+                    const partner_key = process.env.PARTNER_KEY;
+                    const command = "buycard";
+                    const sign = CryptoJS.MD5(partner_key + partner_id + command + request_id).toString();
+                    const wallet_number = process.env.WALLET_NUMBER;
+
+                    let DataRessult = [];
+                    for (let index = 0; index < store.length; index++) {
+                        await axios({
+                            method: "POST",
+                            url: process.env.DOMAIN_PUBLIC + `/cardws?partner_id=${partner_id}&command=${command}&request_id=${request_id}&service_code=${store[index].telco}&wallet_number=${wallet_number}&value=${store[index].value}&qty=${store[index].count}&sign=${sign}`
+                        }).then((responsive) => {
+                            DataRessult = [...DataRessult, responsive.data];
+                        }).catch((err) => {
+                            DataRessult = [...DataRessult, err.response.data];
+                        })
+                    };
+                    //SendEmail
+                    // SendMail("sanghuynh.pt91@gmail.com", "Hello from API Gmail", DataRessult.toString)
+                    //     .then((result) => {
+                    //         return res.status(200).json({ data: result })
+                    //     })
+                    //     .catch((err) => {
+                    //         return res.status(500).json(err)
+                    //     })
+
+                    return res.status(200).json({ data: DataRessult })
+
+                } else {
+                    return res.status(400).json({ error: "Số dư không đủ!" })
                 }
             } else {
                 return res.status(404).json({ error: "User not found!" })
